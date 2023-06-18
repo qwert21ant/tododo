@@ -8,7 +8,6 @@ import 'package:tododo/core/widgets.dart';
 import 'package:tododo/utils/utils.dart';
 
 class ListItem extends StatefulWidget {
-  final int uniqueId;
   final int taskIndex;
   final bool clipTop;
   final bool visibility;
@@ -16,7 +15,6 @@ class ListItem extends StatefulWidget {
   final void Function(int) openEditPage;
 
   const ListItem(
-    this.uniqueId,
     this.taskIndex, {
     this.clipTop = false,
     required this.onChange,
@@ -106,7 +104,7 @@ class _ListItemState extends State<ListItem> {
         : null;
 
     Widget item = Dismissible(
-      key: Key(widget.uniqueId.toString()),
+      key: ValueKey(_task.id),
       onUpdate: (details) {
         setState(() {
           dismissProgress = details.progress;

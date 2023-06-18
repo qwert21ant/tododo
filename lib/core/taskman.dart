@@ -1,11 +1,12 @@
-import 'package:intl/intl.dart';
-
 import '../utils/logger.dart';
 import '../utils/mycounter.dart';
 
 enum TaskImportance { none, low, high }
 
 class TaskData {
+  static int _lastId = 0;
+
+  int id;
   String text;
   bool isDone;
   TaskImportance importance;
@@ -16,7 +17,7 @@ class TaskData {
     this.isDone = false,
     this.importance = TaskImportance.none,
     this.date,
-  });
+  }) : id = _lastId++;
 
   @override
   String toString() {
@@ -28,8 +29,6 @@ final class TaskMan {
   static final List<TaskData> tasks = [];
 
   static CounterWithListener doneCount = CounterWithListener();
-
-  static int uniqueValue = 0; // for Dismissible's key
 
   static void addTask(TaskData task) {
     Logger.logic('add new task: $task');

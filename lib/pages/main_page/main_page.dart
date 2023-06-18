@@ -1,7 +1,4 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 import 'package:tododo/core/navigation.dart';
 import 'package:tododo/core/taskman.dart';
@@ -63,7 +60,6 @@ class _MainPageState extends State<MainPage> {
     if (tasks.isNotEmpty) {
       list = [
         ListItem(
-          TaskMan.uniqueValue++,
           tasks[0][0],
           clipTop: true,
           onChange: _onChange,
@@ -72,7 +68,6 @@ class _MainPageState extends State<MainPage> {
         ),
         for (int i = 1; i < tasks.length; i++)
           ListItem(
-            TaskMan.uniqueValue++,
             tasks[i][0],
             onChange: _onChange,
             openEditPage: _openEditPage,
