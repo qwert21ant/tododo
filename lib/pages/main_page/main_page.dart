@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 import 'package:tododo/core/navigation.dart';
-import 'package:tododo/core/taskman.dart';
+import 'package:tododo/core/task_man.dart';
 import 'package:tododo/core/themes.dart';
 import 'package:tododo/core/widgets.dart';
 
 import 'package:tododo/utils/logger.dart';
-import 'appbar.dart';
-import 'listitem.dart';
-import 'sliver_container.dart';
+import 'widgets/app_bar.dart';
+import 'widgets/list_item.dart';
+import 'widgets/sliver_container.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});

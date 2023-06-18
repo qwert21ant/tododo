@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:tododo/core/navigation.dart';
 import 'package:tododo/core/themes.dart';
 import 'package:tododo/core/widgets.dart';
-import 'package:tododo/core/taskman.dart';
+import 'package:tododo/core/task_man.dart';
 
-import 'textedit.dart';
-import 'importancetile.dart';
-import 'datetile.dart';
+import 'widgets/text_edit.dart';
+import 'widgets/importance_tile.dart';
+import 'widgets/date_tile.dart';
 
 class EditPage extends StatefulWidget {
   final int? taskIndex;
