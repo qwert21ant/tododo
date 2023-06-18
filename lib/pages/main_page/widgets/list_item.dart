@@ -1,5 +1,6 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 import 'package:tododo/core/task_man.dart';
 import 'package:tododo/core/themes.dart';
@@ -30,7 +31,7 @@ class ListItem extends StatefulWidget {
 }
 
 class _ListItemState extends State<ListItem> {
-  late double dismissProgress;
+  late StreamController<double> streamController;
 
   TaskData get _task => TaskMan.tasks[widget.taskIndex];
 
@@ -53,7 +54,14 @@ class _ListItemState extends State<ListItem> {
   void initState() {
     super.initState();
 
-    dismissProgress = 0;
+    streamController = StreamController.broadcast();
+  }
+
+  @override
+  void dispose() {
+    streamController.close();
+
+    super.dispose();
   }
 
   @override
@@ -108,9 +116,7 @@ class _ListItemState extends State<ListItem> {
     Widget item = Dismissible(
       key: ValueKey(_task.id),
       onUpdate: (details) {
-        setState(() {
-          dismissProgress = details.progress;
-        });
+        streamController.add(details.progress);
       },
       confirmDismiss: (dir) async {
         if (dir == DismissDirection.startToEnd) {
@@ -129,7 +135,7 @@ class _ListItemState extends State<ListItem> {
         }
       },
       background: DismissibleBackground(
-        dismissProgress: dismissProgress,
+        progressStream: streamController.stream,
         color: AppTheme.green,
         initOffset: 24 + 28,
         child: const Icon(
@@ -138,7 +144,7 @@ class _ListItemState extends State<ListItem> {
         ),
       ),
       secondaryBackground: DismissibleBackground(
-        dismissProgress: dismissProgress,
+        progressStream: streamController.stream,
         color: AppTheme.red,
         isReversed: true,
         initOffset: 24 + 28,
