@@ -27,23 +27,12 @@ class MyAppBar extends StatefulWidget {
 
 class _MyAppBarState extends State<MyAppBar> {
   late bool visibility;
-  late int doneCount;
-
-  void _onDoneCountChange(int newValue) {
-    Logger.state('update doneCount');
-
-    setState(() {
-      doneCount = newValue;
-    });
-  }
 
   @override
   void initState() {
     super.initState();
 
     visibility = false;
-    doneCount = TaskMan.doneCount.value;
-    TaskMan.doneCount.listener = _onDoneCountChange;
   }
 
   @override
@@ -53,7 +42,6 @@ class _MyAppBarState extends State<MyAppBar> {
       delegate: _MyDelegate(
         collapsedHeight: widget.collapsedHeight,
         expandedHeight: widget.expandedHeight,
-        nDoneTasks: doneCount,
         iconButton: MyIconButton(
           icon: visibility ? Icons.visibility_off : Icons.visibility,
           iconColor: AppTheme.blue,
@@ -73,14 +61,12 @@ class _MyAppBarState extends State<MyAppBar> {
 class _MyDelegate extends SliverPersistentHeaderDelegate {
   final double collapsedHeight;
   final double expandedHeight;
-  final int nDoneTasks;
 
   final Widget iconButton;
 
   _MyDelegate({
     required this.collapsedHeight,
     required this.expandedHeight,
-    required this.nDoneTasks,
     required this.iconButton,
   });
 
@@ -151,10 +137,13 @@ class _MyDelegate extends SliverPersistentHeaderDelegate {
                         padding: const EdgeInsets.only(bottom: 10),
                         child: Opacity(
                           opacity: trimDouble(1.0 - perc * 2),
-                          child: MyText(
-                            'Выполнено — ${nDoneTasks.toString()}',
-                            fontSize: interp(16, 10),
-                            color: AppTheme.labelTertiary,
+                          child: ValueListenableBuilder<int>(
+                            valueListenable: TaskMan.doneCount,
+                            builder: (context, value, _) => MyText(
+                              'Выполнено — $value',
+                              fontSize: interp(16, 10),
+                              color: AppTheme.labelTertiary,
+                            ),
                           ),
                         ),
                       )

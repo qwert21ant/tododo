@@ -1,5 +1,6 @@
+import 'package:flutter/foundation.dart';
+
 import '../utils/logger.dart';
-import '../utils/mycounter.dart';
 
 enum TaskImportance { none, low, high }
 
@@ -28,12 +29,12 @@ class TaskData {
 final class TaskMan {
   static final List<TaskData> tasks = [];
 
-  static CounterWithListener doneCount = CounterWithListener();
+  static final ValueNotifier<int> doneCount = ValueNotifier<int>(0);
 
   static void addTask(TaskData task) {
     Logger.logic('add new task: $task');
 
-    if (task.isDone) doneCount.inc();
+    if (task.isDone) doneCount.value++;
     tasks.add(task);
   }
 
@@ -50,9 +51,9 @@ final class TaskMan {
     Logger.logic('switch isDone state #$index');
 
     if (tasks[index].isDone) {
-      doneCount.dec();
+      doneCount.value--;
     } else {
-      doneCount.inc();
+      doneCount.value++;
     }
     tasks[index].isDone = !tasks[index].isDone;
   }
@@ -60,7 +61,7 @@ final class TaskMan {
   static void removeTask(int index) {
     Logger.logic('remove task #$index: ${tasks[index]}');
 
-    if (tasks[index].isDone) doneCount.dec();
+    if (tasks[index].isDone) doneCount.value--;
     tasks.removeAt(index);
   }
 
