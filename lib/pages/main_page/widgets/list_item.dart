@@ -7,6 +7,8 @@ import 'package:tododo/core/widgets.dart';
 
 import 'package:tododo/utils/utils.dart';
 
+import 'dismissible_background.dart';
+
 class ListItem extends StatefulWidget {
   final int taskIndex;
   final bool clipTop;
@@ -126,7 +128,7 @@ class _ListItemState extends State<ListItem> {
           widget.onChange();
         }
       },
-      background: _DismissibleBackground(
+      background: DismissibleBackground(
         dismissProgress: dismissProgress,
         color: AppTheme.green,
         initOffset: 24 + 28,
@@ -135,7 +137,7 @@ class _ListItemState extends State<ListItem> {
           color: AppTheme.white,
         ),
       ),
-      secondaryBackground: _DismissibleBackground(
+      secondaryBackground: DismissibleBackground(
         dismissProgress: dismissProgress,
         color: AppTheme.red,
         isReversed: true,
@@ -148,11 +150,15 @@ class _ListItemState extends State<ListItem> {
       child: MyListTile(
         onTap: _showInfo,
         leading: Checkbox(
-          fillColor: CheckBoxColors(
-            color: _task.importance == TaskImportance.high
+          fillColor: MaterialStateColor.resolveWith((states) {
+            if (states.contains(MaterialState.selected)) {
+              return AppTheme.green;
+            }
+
+            return _task.importance == TaskImportance.high
                 ? AppTheme.red
-                : AppTheme.labelTertiary,
-          ),
+                : AppTheme.labelTertiary;
+          }),
           value: _task.isDone,
           onChanged: (value) {
             if (value == null) return;
@@ -180,57 +186,5 @@ class _ListItemState extends State<ListItem> {
     } else {
       return ClipRect(child: item);
     }
-
-    return item;
-  }
-}
-
-class CheckBoxColors extends MaterialStateProperty<Color?> {
-  final Color color;
-
-  CheckBoxColors({required this.color});
-
-  @override
-  Color? resolve(Set<MaterialState> states) {
-    if (states.contains(MaterialState.selected)) {
-      return AppTheme.green;
-    }
-
-    return color;
-  }
-}
-
-class _DismissibleBackground extends StatelessWidget {
-  final double dismissProgress;
-  final Color color;
-  final bool isReversed;
-  final Widget child;
-  final double initOffset;
-
-  const _DismissibleBackground({
-    required this.dismissProgress,
-    required this.color,
-    this.isReversed = false,
-    required this.initOffset,
-    required this.child,
-  });
-
-  double _getOffset(BuildContext context) =>
-      dismissProgress * -(MediaQuery.of(context).size.width - 16) + initOffset;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: color,
-      child: Viewport(
-        axisDirection: isReversed ? AxisDirection.left : AxisDirection.right,
-        slivers: [
-          SliverToBoxAdapter(
-            child: Container(alignment: Alignment.centerLeft, child: child),
-          )
-        ],
-        offset: ViewportOffset.fixed(_getOffset(context)),
-      ),
-    );
   }
 }
