@@ -45,22 +45,17 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     final List<Widget> list;
 
-    final List<dynamic> tasks = [];
-    if (visibility) {
-      for (int i = 0; i < TaskMan.tasks.length; i++) {
-        tasks.add([i, TaskMan.tasks[i]]);
-      }
-    } else {
-      for (int i = 0; i < TaskMan.tasks.length; i++) {
-        if (TaskMan.tasks[i].isDone) continue;
-        tasks.add([i, TaskMan.tasks[i]]);
-      }
-    }
+    final List<int> tasks = TaskMan.tasks
+        .asMap()
+        .entries
+        .where((e) => visibility || !e.value.isDone)
+        .map((e) => e.key)
+        .toList();
 
     if (tasks.isNotEmpty) {
       list = [
         ListItem(
-          tasks[0][0],
+          tasks[0],
           clipTop: true,
           onChange: _onChange,
           openEditPage: _openEditPage,
@@ -68,7 +63,7 @@ class _MainPageState extends State<MainPage> {
         ),
         for (int i = 1; i < tasks.length; i++)
           ListItem(
-            tasks[i][0],
+            tasks[i],
             onChange: _onChange,
             openEditPage: _openEditPage,
             visibility: visibility,
@@ -79,7 +74,6 @@ class _MainPageState extends State<MainPage> {
             bottomRight: Radius.circular(8),
           ),
           child: MyListTile(
-            //color: AppTheme.backSecondary,
             title: const MyText('Новое', color: AppTheme.labelTertiary),
             onTap: _openEditPage,
           ),
@@ -90,7 +84,6 @@ class _MainPageState extends State<MainPage> {
         ClipRRect(
           borderRadius: const BorderRadius.all(Radius.circular(8)),
           child: MyListTile(
-            //color: AppTheme.backSecondary,
             title: const MyText('Новое', color: AppTheme.labelTertiary),
             onTap: _openEditPage,
           ),
