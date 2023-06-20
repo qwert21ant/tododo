@@ -6,6 +6,8 @@ import 'package:tododo/core/task_man.dart';
 import 'package:tododo/core/themes.dart';
 import 'package:tododo/core/widgets.dart';
 
+import 'package:tododo/model/task.dart';
+
 import 'package:tododo/utils/utils.dart';
 
 import 'dismissible_background.dart';

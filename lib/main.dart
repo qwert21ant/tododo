@@ -8,9 +8,7 @@ import 'core/task_man.dart';
 import 'utils/logger.dart';
 
 void main() {
-  TaskMan.demo();
-
-  runApp(const App());
+  TaskMan.loadFromNet().then((_) => runApp(const App()));
 }
 
 class App extends StatelessWidget {

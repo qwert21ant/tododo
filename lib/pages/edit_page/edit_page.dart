@@ -5,6 +5,8 @@ import 'package:tododo/core/themes.dart';
 import 'package:tododo/core/widgets.dart';
 import 'package:tododo/core/task_man.dart';
 
+import 'package:tododo/model/task.dart';
+
 import 'widgets/text_edit.dart';
 import 'widgets/importance_tile.dart';
 import 'widgets/date_tile.dart';
@@ -39,7 +41,7 @@ class _EditPageState extends State<EditPage> {
 
     task = widget.taskIndex != null
         ? TaskMan.tasks[widget.taskIndex!]
-        : TaskData('');
+        : TaskData(text: '');
   }
 
   int _getImportanceIndex() {
