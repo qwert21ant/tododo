@@ -52,7 +52,7 @@ class TaskData {
         changedAt = dateFromTimestamp(json['changed_at']),
         updatedBy = json['last_updated_by'];
 
-  Map<String, dynamic> toJson() => {
+  Map<String, Object> toJson() => {
         'id': id,
         'text': text,
         'importance': importanceToString(importance),

@@ -4,6 +4,7 @@ import 'package:tododo/model/task.dart';
 import 'package:tododo/utils/logger.dart';
 
 import 'network.dart';
+import 'persistence.dart';
 
 final class TaskMan {
   static final List<TaskData> tasks = [];
@@ -54,6 +55,15 @@ final class TaskMan {
 
   static Future<void> loadFromNet() =>
       NetMan.getTasks().then((List<TaskData> value) {
+        tasks.clear();
+        tasks.addAll(value);
+
+        doneCount.value =
+            tasks.fold(0, (count, task) => count + (task.isDone ? 1 : 0));
+      });
+
+  static Future<void> loadFromStorage() =>
+      StorageMan.getTasks().then((List<TaskData> value) {
         tasks.clear();
         tasks.addAll(value);
 
