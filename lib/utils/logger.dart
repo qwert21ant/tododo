@@ -3,11 +3,11 @@ import 'dart:developer' as dev;
 import 'package:flutter/widgets.dart';
 
 abstract class Logger {
-  static void log(String text) => dev.log(text);
+  static void log(String text) => dev.log(text, name: 'my.log');
 
-  static void nav(String text) => dev.log(text, name: 'nav');
-  static void state(String text) => dev.log(text, name: 'state');
-  static void logic(String text) => dev.log(text, name: 'logic');
+  static void nav(String text) => dev.log(text, name: 'my.nav');
+  static void state(String text) => dev.log(text, name: 'my.state');
+  static void logic(String text) => dev.log(text, name: 'my.logic');
 }
 
 class NavigatorLogger extends NavigatorObserver {

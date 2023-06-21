@@ -12,7 +12,7 @@ final class TaskMan {
   static final ValueNotifier<int> doneCount = ValueNotifier<int>(0);
 
   static void addTask(TaskData task) {
-    Logger.logic('add new task: $task');
+    Logger.logic('add new task: ${task.id}');
 
     if (task.isDone) doneCount.value++;
 
@@ -22,7 +22,7 @@ final class TaskMan {
 
   // except isDone
   static void changeTask(int index, TaskData task) {
-    Logger.logic('change task #$index: $task');
+    Logger.logic('change task ${task.id}');
 
     tasks[index].text = task.text;
     tasks[index].importance = task.importance;
@@ -32,7 +32,7 @@ final class TaskMan {
   }
 
   static void switchDone(int index) {
-    Logger.logic('switch isDone state #$index');
+    Logger.logic('switch isDone state ${tasks[index].id}');
 
     if (tasks[index].isDone) {
       doneCount.value--;
@@ -45,7 +45,7 @@ final class TaskMan {
   }
 
   static void removeTask(int index) {
-    Logger.logic('remove task #$index: ${tasks[index]}');
+    Logger.logic('remove task ${tasks[index].id}');
 
     NetMan.deleteTask(tasks[index].id);
 
@@ -53,23 +53,25 @@ final class TaskMan {
     tasks.removeAt(index);
   }
 
-  static Future<void> loadFromNet() =>
-      NetMan.getTasks().then((List<TaskData> value) {
-        tasks.clear();
-        tasks.addAll(value);
+  static Future<void> loadFromNet() async {
+    final newTasks = await NetMan.getTasks();
 
-        doneCount.value =
-            tasks.fold(0, (count, task) => count + (task.isDone ? 1 : 0));
-      });
+    tasks.clear();
+    tasks.addAll(newTasks);
 
-  static Future<void> loadFromStorage() =>
-      StorageMan.getTasks().then((List<TaskData> value) {
-        tasks.clear();
-        tasks.addAll(value);
+    doneCount.value =
+        tasks.fold(0, (count, task) => count + (task.isDone ? 1 : 0));
+  }
 
-        doneCount.value =
-            tasks.fold(0, (count, task) => count + (task.isDone ? 1 : 0));
-      });
+  static Future<void> loadFromStorage() async {
+    final newTasks = await StorageMan.getTasks();
+
+    tasks.clear();
+    tasks.addAll(newTasks);
+
+    doneCount.value =
+        tasks.fold(0, (count, task) => count + (task.isDone ? 1 : 0));
+  }
 
   static void demo() {
     tasks.clear();

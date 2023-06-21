@@ -6,6 +6,26 @@ import 'package:http/retry.dart';
 
 import 'package:tododo/model/task.dart';
 
+class NetException implements Exception {
+  int statusCode;
+  String? message;
+
+  NetException(this.statusCode, [this.message]);
+
+  @override
+  String toString() {
+    if (message != null) {
+      return 'NetException [$statusCode]: $message';
+    }
+
+    if (statusCode == 400) return 'NetException [400]: Bad request';
+    if (statusCode == 401) return 'NetException [401]: Unauthorized';
+    if (statusCode == 500) return 'NetException [500]: Server error';
+
+    return 'NetException [$statusCode]';
+  }
+}
+
 typedef JsonObject = Map<String, dynamic>;
 
 abstract final class NetMan {
@@ -25,7 +45,7 @@ abstract final class NetMan {
       final JsonObject body = jsonDecode(response.body);
 
       if (body['status'] != 'ok') {
-        throw Exception('Unknown status: ${body['status']}');
+        throw NetException(200, 'Unknown status: ${body['status']}');
       }
 
       _revision = body['revision'];
@@ -33,11 +53,7 @@ abstract final class NetMan {
       return body;
     }
 
-    if (response.statusCode == 400) throw Exception('Bad request');
-    if (response.statusCode == 401) throw Exception('Unauthorized');
-    if (response.statusCode > 500) throw Exception('Server error');
-
-    throw Exception('Server returns ${response.statusCode} status code');
+    throw NetException(response.statusCode);
   }
 
   static Future<JsonObject> _send(
