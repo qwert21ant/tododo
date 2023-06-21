@@ -2,21 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'core/navigation.dart';
-import 'core/persistence.dart';
 import 'core/task_man.dart';
 import 'core/themes.dart';
 
 import 'utils/logger.dart';
 
-void main() async {
-  await StorageMan.init();
+Future<void> main() async {
+  await TaskMan.init();
 
-  try {
-    await TaskMan.loadFromNet();
-  } on Exception catch (e) {
-    print(e);
-    await TaskMan.loadFromStorage();
-  }
+  await TaskMan.load();
 
   runApp(const App());
 }

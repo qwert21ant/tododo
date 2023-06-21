@@ -4,10 +4,10 @@ import 'package:flutter/widgets.dart';
 
 abstract class Logger {
   static void log(String text) => dev.log(text, name: 'my.log');
-
+  static void net(String text) => dev.log(text, name: 'my.net');
   static void nav(String text) => dev.log(text, name: 'my.nav');
   static void state(String text) => dev.log(text, name: 'my.state');
-  static void logic(String text) => dev.log(text, name: 'my.logic');
+  static void data(String text) => dev.log(text, name: 'my.data');
 }
 
 class NavigatorLogger extends NavigatorObserver {

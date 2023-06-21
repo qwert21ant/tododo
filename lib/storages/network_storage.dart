@@ -5,6 +5,9 @@ import 'package:http/http.dart';
 import 'package:http/retry.dart';
 
 import 'package:tododo/model/task.dart';
+import 'package:tododo/utils/logger.dart';
+
+import 'storage.dart';
 
 class NetException implements Exception {
   int statusCode;
@@ -20,6 +23,7 @@ class NetException implements Exception {
 
     if (statusCode == 400) return 'NetException [400]: Bad request';
     if (statusCode == 401) return 'NetException [401]: Unauthorized';
+    if (statusCode == 404) return 'NetException [404]: Not found';
     if (statusCode == 500) return 'NetException [500]: Server error';
 
     return 'NetException [$statusCode]';
@@ -28,19 +32,29 @@ class NetException implements Exception {
 
 typedef JsonObject = Map<String, dynamic>;
 
-abstract final class NetMan {
+final class NetStorage implements Storage {
   static const baseUrl = 'https://beta.mrdekk.ru/todobackend';
   static const _token = '*some token*';
 
-  static int? _revision;
   static int? failsThreshold;
 
-  static final _client = RetryClient(
+  static final NetStorage _instance = NetStorage._();
+
+  NetStorage._();
+
+  factory NetStorage() => _instance;
+
+  int? _revision;
+
+  @override
+  get revision => _revision;
+
+  final _client = RetryClient(
     Client(),
     when: (BaseResponse response) => response.statusCode == 500,
   );
 
-  static JsonObject _handleResponse(Response response) {
+  JsonObject _handleResponse(Response response) {
     if (response.statusCode == 200) {
       final JsonObject body = jsonDecode(response.body);
 
@@ -53,14 +67,15 @@ abstract final class NetMan {
       return body;
     }
 
+    Logger.net('Response status code: ${response.statusCode}');
     throw NetException(response.statusCode);
   }
 
-  static Future<JsonObject> _send(
+  Future<JsonObject> _send(
     String method,
     String path, [
     JsonObject? body,
-  ]) {
+  ]) async {
     final request = Request(method, Uri.parse('$baseUrl/$path'));
 
     // Headers
@@ -79,52 +94,47 @@ abstract final class NetMan {
     }
 
     // Send
-    return _client
-        .send(request)
-        .then(Response.fromStream)
-        .then(_handleResponse);
+    final response = await Response.fromStream(await _client.send(request));
+    return _handleResponse(response);
   }
 
-  static Future<List<TaskData>> getTasks() => _send(
-        'GET',
-        'list',
-      ).then((JsonObject object) {
-        final List<dynamic> list = object['list'];
+  @override
+  Future<List<TaskData>> getTasks() async {
+    final data = await _send('GET', 'list');
+    final List<dynamic> list = data['list'];
 
-        return Future.value(
-          list.map((item) => TaskData.fromJson(item)).toList(),
-        );
-      });
+    return Future.value(
+      list.map<TaskData>((item) => TaskData.fromJson(item)).toList(),
+    );
+  }
 
-  static Future<void> setTasks(List<TaskData> tasks) => _send(
-        'PATCH',
-        'list',
-        {'list': tasks.map((item) => item.toJson()).toList()},
-      );
+  @override
+  Future<void> setTasks(List<TaskData> tasks) async {
+    await _send('PATCH', 'list', {
+      'list': tasks.map((item) => item.toJson()).toList(),
+    });
+  }
 
-  static Future<TaskData> getTask(String id) => _send(
-        'GET',
-        'list/$id',
-      ).then((JsonObject object) {
-        final element = object['element'];
+  @override
+  Future<TaskData> getTask(String id) async {
+    final data = await _send('GET', 'list/$id');
+    final element = data['element'];
 
-        return Future.value(TaskData.fromJson(element));
-      });
+    return Future.value(TaskData.fromJson(element));
+  }
 
-  static Future<void> addTask(TaskData task) => _send(
-        'POST',
-        'list',
-        {'element': task.toJson()},
-      );
+  @override
+  Future<void> addTask(TaskData task) async {
+    await _send('POST', 'list', {'element': task.toJson()});
+  }
 
-  static Future<void> updateTask(TaskData task) => _send(
-        'PUT',
-        'list/${task.id}',
-        {'element': task.toJson()},
-      );
+  @override
+  Future<void> updateTask(TaskData task) async {
+    await _send('PUT', 'list/${task.id}', {'element': task.toJson()});
+  }
 
-  static Future<void> deleteTask(String id) => _send(
-        'DELETE',
-        'list/$id',
-      );
+  @override
+  Future<void> deleteTask(String id) async {
+    await _send('DELETE', 'list/$id');
+  }
 }

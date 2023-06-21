@@ -3,36 +3,86 @@ import 'package:flutter/foundation.dart';
 import 'package:tododo/model/task.dart';
 import 'package:tododo/utils/logger.dart';
 
-import 'network.dart';
-import 'persistence.dart';
+import 'package:tododo/storages/network_storage.dart';
+import 'package:tododo/storages/local_storage.dart';
 
 final class TaskMan {
   static final List<TaskData> tasks = [];
-
   static final ValueNotifier<int> doneCount = ValueNotifier<int>(0);
 
+  static final NetStorage _netStorage = NetStorage();
+  static final LocalStorage _localStorage = LocalStorage();
+
+  static void _updateTasks(List<TaskData> newTasks) {
+    tasks.clear();
+    tasks.addAll(newTasks);
+
+    doneCount.value =
+        tasks.fold(0, (count, task) => count + (task.isDone ? 1 : 0));
+  }
+
+  static Future<void> init() async {
+    await _localStorage.init();
+  }
+
+  static Future<void> load() async {
+    final List<TaskData> netTasks;
+
+    try {
+      netTasks = await _netStorage.getTasks();
+      Logger.data('Successfully load from net');
+
+      Logger.data(
+        'revisions: net ${_netStorage.revision} <-> local ${_localStorage.revision}',
+      );
+
+      if (_netStorage.revision != _localStorage.revision) {
+        Logger.data('Unsynchronized data');
+
+        final storageTasks = await _localStorage.getTasks();
+
+        if (_netStorage.revision < _localStorage.revision) {
+          Logger.data('Sync: storage -> net');
+          await _netStorage.setTasks(storageTasks);
+          _updateTasks(storageTasks);
+        } else {
+          Logger.data('Sync: net -> storage');
+          await _localStorage.setTasks(netTasks);
+          _updateTasks(netTasks);
+        }
+
+        await _localStorage.setRevision(_netStorage.revision);
+      } else {
+        _updateTasks(netTasks);
+      }
+    } on NetException catch (_) {
+      Logger.data('Unable to load from net, load from storage');
+      _updateTasks(await _localStorage.getTasks());
+    }
+  }
+
   static void addTask(TaskData task) {
-    Logger.logic('add new task: ${task.id}');
+    Logger.data('add new task: ${task.id}');
 
     if (task.isDone) doneCount.value++;
 
     tasks.add(task);
-    NetMan.addTask(task);
+    _netStorage.addTask(task);
   }
 
   // except isDone
   static void changeTask(int index, TaskData task) {
-    Logger.logic('change task ${task.id}');
+    Logger.data('change task ${task.id}');
 
     tasks[index].text = task.text;
     tasks[index].importance = task.importance;
     tasks[index].date = task.date;
 
-    NetMan.updateTask(tasks[index]);
+    _netStorage.updateTask(tasks[index]);
   }
 
   static void switchDone(int index) {
-    Logger.logic('switch isDone state ${tasks[index].id}');
+    Logger.data('switch isDone state: ${tasks[index].id}');
 
     if (tasks[index].isDone) {
       doneCount.value--;
@@ -41,36 +91,16 @@ final class TaskMan {
     }
     tasks[index].isDone = !tasks[index].isDone;
 
-    NetMan.updateTask(tasks[index]);
+    _netStorage.updateTask(tasks[index]);
   }
 
   static void removeTask(int index) {
-    Logger.logic('remove task ${tasks[index].id}');
+    Logger.data('remove task ${tasks[index].id}');
 
-    NetMan.deleteTask(tasks[index].id);
+    _netStorage.deleteTask(tasks[index].id);
 
     if (tasks[index].isDone) doneCount.value--;
     tasks.removeAt(index);
-  }
-
-  static Future<void> loadFromNet() async {
-    final newTasks = await NetMan.getTasks();
-
-    tasks.clear();
-    tasks.addAll(newTasks);
-
-    doneCount.value =
-        tasks.fold(0, (count, task) => count + (task.isDone ? 1 : 0));
-  }
-
-  static Future<void> loadFromStorage() async {
-    final newTasks = await StorageMan.getTasks();
-
-    tasks.clear();
-    tasks.addAll(newTasks);
-
-    doneCount.value =
-        tasks.fold(0, (count, task) => count + (task.isDone ? 1 : 0));
   }
 
   static void demo() {
@@ -81,7 +111,8 @@ final class TaskMan {
       TaskData(text: 'Купить что-то', isDone: true),
       TaskData(text: 'Купить что-то'),
       TaskData(
-          text: 'Купить что-то, где-то, зачем-то, но зачем не очень понятно'),
+        text: 'Купить что-то, где-то, зачем-то, но зачем не очень понятно',
+      ),
       TaskData(
         text:
             'Купить что-то, где-то, зачем-то, но зачем не очень понятно, но точно чтобы показать как обрезается текст',
