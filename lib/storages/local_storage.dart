@@ -28,12 +28,12 @@ final class LocalStorage implements Storage {
   );
 
   Future<void> setRevision(int revision) async {
+    _revision = revision;
     await _store.record('revision').update(_db, {'revision': revision});
   }
 
   Future<void> incRevision() async {
-    _revision++;
-    await setRevision(_revision);
+    await setRevision(_revision + 1);
   }
 
   Future<void> init() async {
