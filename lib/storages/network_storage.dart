@@ -15,6 +15,8 @@ class NetException implements Exception {
 
   NetException(this.statusCode, [this.message]);
 
+  bool get isUnsync => statusCode == 400;
+
   @override
   String toString() {
     if (message != null) {
@@ -44,10 +46,11 @@ final class NetStorage implements Storage {
 
   factory NetStorage() => _instance;
 
-  int? _revision;
+  int _revision = -1;
 
   @override
-  get revision => _revision;
+  int get revision => _revision;
+
 
   final _client = RetryClient(
     Client(),
@@ -67,8 +70,9 @@ final class NetStorage implements Storage {
       return body;
     }
 
-    Logger.net('Response status code: ${response.statusCode}');
-    throw NetException(response.statusCode);
+    final e = NetException(response.statusCode);
+    Logger.net(e.toString());
+    throw e;
   }
 
   Future<JsonObject> _send(
@@ -80,8 +84,8 @@ final class NetStorage implements Storage {
 
     // Headers
     request.headers['Authorization'] = 'Bearer $_token';
-    if (_revision != null) {
-      request.headers['X-Last-Known-Revision'] = _revision!.toString();
+    if (_revision != -1) {
+      request.headers['X-Last-Known-Revision'] = _revision.toString();
     }
     if (failsThreshold != null) {
       request.headers['X-Generate-Fails'] = failsThreshold!.toString();

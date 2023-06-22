@@ -7,7 +7,7 @@ abstract class Logger {
   static void net(String text) => dev.log(text, name: 'my.net');
   static void nav(String text) => dev.log(text, name: 'my.nav');
   static void state(String text) => dev.log(text, name: 'my.state');
-  static void data(String text) => dev.log(text, name: 'my.data');
+  static void storage(String text) => dev.log(text, name: 'my.storage');
 }
 
 class NavigatorLogger extends NavigatorObserver {

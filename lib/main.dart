@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:tododo/storages/local_storage.dart';
 
 import 'core/navigation.dart';
 import 'core/task_man.dart';
@@ -8,8 +9,9 @@ import 'core/themes.dart';
 import 'utils/logger.dart';
 
 Future<void> main() async {
-  await TaskMan.init();
+  WidgetsFlutterBinding.ensureInitialized();
 
+  await TaskMan.init(); // TODO: init and load after runApp
   await TaskMan.load();
 
   runApp(const App());

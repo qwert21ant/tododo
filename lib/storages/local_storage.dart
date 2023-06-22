@@ -21,7 +21,7 @@ final class LocalStorage implements Storage {
   late int _revision;
 
   @override
-  get revision => _revision;
+  int get revision => _revision;
 
   final Finder _tasksFinder = Finder(
     filter: Filter.not(Filter.byKey('revision')),

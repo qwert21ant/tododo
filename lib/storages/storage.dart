@@ -1,7 +1,7 @@
 import 'package:tododo/model/task.dart';
 
 abstract interface class Storage {
-  get revision;
+  int get revision;
 
   Future<List<TaskData>> getTasks();
 

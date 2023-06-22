@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:uuid/uuid.dart';
@@ -30,7 +31,7 @@ class TaskData {
   })  : id = id ?? _uuid.v4(),
         createdAt = createdAt ?? DateTime.now(),
         changedAt = createdAt ?? DateTime.now(),
-        updatedBy = 'bebra device';
+        updatedBy = Platform.isAndroid ? 'android' : 'not android';
 
   TaskData.fromJson(Map<String, dynamic> json)
       : id = json['id'],
