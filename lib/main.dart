@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'core/navigation.dart';
 import 'core/task_man.dart';
 import 'core/themes.dart';
 
 import 'utils/logger.dart';
+import 'utils/s.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,12 +23,8 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      supportedLocales: const [Locale('en'), Locale('ru')],
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate
-      ],
+      supportedLocales: S.supportedLocales,
+      localizationsDelegates: S.localizationDelegates,
       title: 'ToDoDo',
       theme: lightTheme,
       scrollBehavior:

@@ -6,6 +6,8 @@ import 'package:tododo/core/themes.dart';
 import 'package:tododo/core/widgets.dart';
 
 import 'package:tododo/utils/logger.dart';
+import 'package:tododo/utils/s.dart';
+
 import 'widgets/app_bar.dart';
 import 'widgets/list_item.dart';
 import 'widgets/sliver_container.dart';
@@ -35,7 +37,7 @@ class _MainPageState extends State<MainPage> {
   void _onChange() => setState(() {});
 
   void _onChangeVisibility(bool newVisibility) {
-    Logger.state('change visibility: ${newVisibility ? 'on' : 'off'}');
+    Logger.state('Change visibility: ${newVisibility ? 'on' : 'off'}');
 
     setState(() {
       visibility = newVisibility;
@@ -75,7 +77,7 @@ class _MainPageState extends State<MainPage> {
             bottomRight: Radius.circular(8),
           ),
           child: MyListTile(
-            title: const MyText('Новое', color: AppTheme.labelTertiary),
+            title: MyText(S.of(context)['new'], color: AppTheme.labelTertiary),
             onTap: _openEditPage,
           ),
         )
@@ -85,7 +87,7 @@ class _MainPageState extends State<MainPage> {
         ClipRRect(
           borderRadius: const BorderRadius.all(Radius.circular(8)),
           child: MyListTile(
-            title: const MyText('Новое', color: AppTheme.labelTertiary),
+            title: MyText(S.of(context)['new'], color: AppTheme.labelTertiary),
             onTap: _openEditPage,
           ),
         )

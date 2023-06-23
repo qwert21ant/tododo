@@ -4,6 +4,7 @@ import 'package:tododo/core/themes.dart';
 import 'package:tododo/core/widgets.dart';
 
 import 'package:tododo/utils/utils.dart';
+import 'package:tododo/utils/s.dart';
 
 class DateTile extends StatefulWidget {
   final DateTime? selectedDate;
@@ -32,7 +33,7 @@ class _DateTileState extends State<DateTile> {
 
   Future<void> _inputDate() async {
     final newDate = await showDatePicker(
-      locale: const Locale('ru'),
+      locale: S.of(context).locale,
       initialEntryMode: DatePickerEntryMode.calendarOnly,
       context: context,
       initialDate: selectedDate ?? DateTime.now(),
@@ -59,7 +60,7 @@ class _DateTileState extends State<DateTile> {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: _onTap,
-      title: const MyText('Сделать до'),
+      title: MyText(S.of(context)['doTill']),
       subtitle:
           MyText(formatDate(selectedDate), fontSize: 14, color: AppTheme.blue),
       trailing: Switch(

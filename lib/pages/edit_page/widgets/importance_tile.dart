@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:tododo/core/themes.dart';
 import 'package:tododo/core/widgets.dart';
 
+import 'package:tododo/utils/s.dart';
+
 class ImportanceTile extends StatefulWidget {
   final int selectedImportance;
   final void Function(int) onChange;
@@ -27,19 +29,19 @@ class _ImportanceTileState extends State<ImportanceTile> {
     selectedImportance = widget.selectedImportance;
   }
 
-  Widget _getItem(int ind, [bool isSub = false]) {
+  Widget _getItem(BuildContext context, int ind, [bool isSub = false]) {
     final color = isSub ? AppTheme.labelTertiary : null;
     final fontSize = isSub ? 14.0 : null;
 
     if (ind == 0) {
-      return MyText('Нет', color: color, fontSize: fontSize);
+      return MyText(S.of(context)['none'], color: color, fontSize: fontSize);
     }
     if (ind == 1) {
-      return MyText('Низкий', color: color, fontSize: fontSize);
+      return MyText(S.of(context)['low'], color: color, fontSize: fontSize);
     }
     if (ind == 2) {
       return MyText(
-        '!! Высокий',
+        '!! ${S.of(context)['high']}',
         color: color ?? AppTheme.red,
         fontSize: fontSize,
       );
@@ -62,12 +64,15 @@ class _ImportanceTileState extends State<ImportanceTile> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [const MyText('Важность'), _getItem(i, true)],
+                children: [
+                  MyText(S.of(context)['importance']),
+                  _getItem(context, i, true),
+                ],
               ),
           ],
           items: [
             for (int i = 0; i < 3; i++)
-              DropdownMenuItem(value: i, child: _getItem(i))
+              DropdownMenuItem(value: i, child: _getItem(context, i))
           ],
           onChanged: (selected) {
             setState(() {

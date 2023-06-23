@@ -6,6 +6,8 @@ import 'package:tododo/core/themes.dart';
 import 'package:tododo/core/widgets.dart';
 import 'package:tododo/core/task_man.dart';
 
+import 'package:tododo/utils/s.dart';
+
 class MyAppBar extends StatefulWidget {
   final double collapsedHeight;
   final double expandedHeight;
@@ -123,7 +125,7 @@ class _MyDelegate extends SliverPersistentHeaderDelegate {
                       Padding(
                         padding: EdgeInsets.only(bottom: interp(30, 14)),
                         child: Text(
-                          'Мои дела',
+                          S.of(context)['myTasks'],
                           style: AppTheme.titleLarge
                               .copyWith(fontSize: interp(32, 20), height: 1.6),
                         ),
@@ -135,7 +137,7 @@ class _MyDelegate extends SliverPersistentHeaderDelegate {
                           child: ValueListenableBuilder<int>(
                             valueListenable: TaskMan.doneCount,
                             builder: (context, value, _) => MyText(
-                              'Выполнено — $value',
+                              '${S.of(context)['done']} — $value',
                               fontSize: interp(16, 10),
                               color: AppTheme.labelTertiary,
                             ),

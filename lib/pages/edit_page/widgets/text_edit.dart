@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:tododo/core/themes.dart';
 
+import 'package:tododo/utils/s.dart';
+
 class TextEdit extends StatefulWidget {
   final String? text;
   final void Function(String) onChange;
@@ -50,9 +52,9 @@ class _TextEditState extends State<TextEdit> {
         onChanged: widget.onChange,
         keyboardType: TextInputType.multiline,
         maxLines: null,
-        decoration: const InputDecoration(
+        decoration: InputDecoration(
           border: InputBorder.none,
-          hintText: 'Что надо сделать...',
+          hintText: S.of(context)['whatToDo'],
         ),
         style: AppTheme.body.copyWith(height: 1.125),
       ),

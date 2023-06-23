@@ -7,6 +7,8 @@ import 'package:tododo/core/task_man.dart';
 
 import 'package:tododo/model/task.dart';
 
+import 'package:tododo/utils/s.dart';
+
 import 'widgets/text_edit.dart';
 import 'widgets/importance_tile.dart';
 import 'widgets/date_tile.dart';
@@ -78,7 +80,7 @@ class _EditPageState extends State<EditPage> {
                   }
                   _goBack();
                 },
-                child: const MyText('СОХРАНИТЬ', color: AppTheme.blue),
+                child: MyText(S.of(context)['save'], color: AppTheme.blue),
               ),
               const SizedBox(width: 16)
             ],
@@ -127,7 +129,7 @@ class _EditPageState extends State<EditPage> {
                     ),
                   ),
                   title: MyText(
-                    'Удалить',
+                    S.of(context)['delete'],
                     color: widget.taskIndex == null
                         ? AppTheme.labelDisable
                         : AppTheme.red,
