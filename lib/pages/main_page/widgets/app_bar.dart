@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -6,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:tododo/core/themes.dart';
 import 'package:tododo/core/widgets.dart';
 import 'package:tododo/core/task_man.dart';
-
-import 'package:tododo/utils/logger.dart';
 
 class MyAppBar extends StatefulWidget {
   final double collapsedHeight;
@@ -76,14 +73,12 @@ class _MyDelegate extends SliverPersistentHeaderDelegate {
     double shrinkOffset,
     bool overlapsContent,
   ) {
-    double trimDouble(double x) => min(max(x, 0.0), 1.0);
-
     // 0 - expanded
     // 1 - collapsed
     final double perc =
-        trimDouble(shrinkOffset / (expandedHeight - collapsedHeight));
+        (shrinkOffset / (expandedHeight - collapsedHeight)).clamp(0.0, 1.0);
 
-    double interp(a, b) => lerpDouble(a, b, perc)!;
+    double interp(double a, double b) => lerpDouble(a, b, perc)!;
 
     return Stack(
       children: [
@@ -136,7 +131,7 @@ class _MyDelegate extends SliverPersistentHeaderDelegate {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 10),
                         child: Opacity(
-                          opacity: trimDouble(1.0 - perc * 2),
+                          opacity: (1.0 - perc * 2).clamp(0.0, 1.0),
                           child: ValueListenableBuilder<int>(
                             valueListenable: TaskMan.doneCount,
                             builder: (context, value, _) => MyText(

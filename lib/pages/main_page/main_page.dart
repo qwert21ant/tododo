@@ -21,7 +21,7 @@ class _MainPageState extends State<MainPage> {
   late bool visibility;
 
   @override
-  initState() {
+  void initState() {
     super.initState();
 
     visibility = false;

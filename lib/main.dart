@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:tododo/storages/local_storage.dart';
 
 import 'core/navigation.dart';
 import 'core/task_man.dart';
