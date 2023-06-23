@@ -43,6 +43,7 @@ final class TaskMan {
     tasks[index].text = task.text;
     tasks[index].importance = task.importance;
     tasks[index].date = task.date;
+    tasks[index].changedAt = DateTime.now();
 
     _storage.updateTask(tasks[index]);
   }
@@ -54,6 +55,7 @@ final class TaskMan {
       doneCount.value++;
     }
     tasks[index].isDone = !tasks[index].isDone;
+    tasks[index].changedAt = DateTime.now();
 
     _storage.updateTask(tasks[index]);
   }
