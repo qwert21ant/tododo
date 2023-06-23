@@ -51,7 +51,6 @@ final class NetStorage implements Storage {
   @override
   int get revision => _revision;
 
-
   final _client = RetryClient(
     Client(),
     when: (BaseResponse response) => response.statusCode == 500,

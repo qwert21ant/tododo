@@ -30,18 +30,18 @@ class _DateTileState extends State<DateTile> {
         widget.onChange(selectedDate);
       });
 
-  void _inputDate() => showDatePicker(
-        locale: const Locale('ru'),
-        initialEntryMode: DatePickerEntryMode.calendarOnly,
-        context: context,
-        initialDate: selectedDate ?? DateTime.now(),
-        firstDate: DateTime.now().subtract(const Duration(days: 360)),
-        lastDate: DateTime.now().add(const Duration(days: 3600)),
-      ).then(
-        (newDate) {
-          if (newDate != null) _updateDate(newDate);
-        },
-      );
+  Future<void> _inputDate() async {
+    final newDate = await showDatePicker(
+      locale: const Locale('ru'),
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
+      context: context,
+      initialDate: selectedDate ?? DateTime.now(),
+      firstDate: DateTime.now().subtract(const Duration(days: 360)),
+      lastDate: DateTime.now().add(const Duration(days: 3600)),
+    );
+
+    if (newDate != null) _updateDate(newDate);
+  }
 
   void _onTap() {
     _inputDate();

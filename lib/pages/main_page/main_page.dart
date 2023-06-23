@@ -27,8 +27,9 @@ class _MainPageState extends State<MainPage> {
     visibility = false;
   }
 
-  void _openEditPage([int? taskIndex]) {
-    NavMan.openEditPage(taskIndex).then((_) => _onChange());
+  Future<void> _openEditPage([int? taskIndex]) async {
+    await NavMan.openEditPage(taskIndex);
+    _onChange();
   }
 
   void _onChange() => setState(() {});

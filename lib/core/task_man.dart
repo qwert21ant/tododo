@@ -38,7 +38,7 @@ final class TaskMan {
     _storage.addTask(task);
   }
 
-  // except isDone
+  // TODO: replace task param
   static void changeTask(int index, TaskData task) {
     tasks[index].text = task.text;
     tasks[index].importance = task.importance;

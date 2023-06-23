@@ -6,6 +6,11 @@ import 'storage.dart';
 import 'local_storage.dart';
 import 'network_storage.dart';
 
+// TODO: add stream for net queries
+// Добавить чёт типа стрима для net запросов
+// т.к. если часто тыкать то запросы кидаются не по порядку
+// или просто revision не успевает обновляться
+
 final class SyncStorage implements Storage {
   static final SyncStorage _instance = SyncStorage._();
 
