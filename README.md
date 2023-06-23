@@ -19,4 +19,4 @@
 
 ## Релиз
   - Ada Lovelace: [1.0.0](https://disk.yandex.ru/d/mtSCbFwtXO3z1A)
-  - Alan Turing: [1.1.0](https://disk.yandex.ru/d/LYDx_FbIhYHb4A)
+  - Alan Turing: [1.1.0](https://disk.yandex.ru/d/I2ZUEwjaUkd-xQ)
