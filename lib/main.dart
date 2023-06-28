@@ -31,7 +31,7 @@ class App extends StatelessWidget {
           const MaterialScrollBehavior().copyWith(scrollbars: false),
       navigatorKey: NavMan.key,
       routes: Routes.routes,
-      initialRoute: Routes.home,
+      initialRoute: Routes.load,
       navigatorObservers: [NavigatorLogger()],
     );
   }
