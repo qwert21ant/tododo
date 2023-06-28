@@ -23,7 +23,7 @@ class _LoadPageState extends State<LoadPage> {
       await TaskMan.init();
       NavMan.openMainPage();
     } catch (e) {
-      Logger.error(e);
+      Logger.error(e.toString(), 'init');
 
       setState(() {
         _error = e.toString();

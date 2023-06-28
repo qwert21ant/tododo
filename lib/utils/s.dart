@@ -29,7 +29,9 @@ class S {
         _data = data;
 
   String operator [](String key) {
-    if (_data[key] == null) Logger.log('String $key not found');
+    if (_data[key] == null) {
+      Logger.warn('String $key not found', 's');
+    }
     return _data[key] ?? 'no string';
   }
 }

@@ -33,7 +33,7 @@ final class SyncStorage implements Storage {
   Future<void> _pushTasks() async {
     if (_netStorage.revision == _localStorage.revision) return;
 
-    Logger.storage('Push tasks');
+    Logger.info('Push tasks', 'storage');
 
     // Костыль?
     // если ни разу не получали revision
@@ -43,8 +43,7 @@ final class SyncStorage implements Storage {
       try {
         await _netStorage.getTasks();
       } catch (_) {
-        Logger.storage('bebebe');
-        Logger.storage('Failed to push tasks');
+        Logger.warn('Failed to push tasks', 'storage');
         return;
       }
     }
@@ -54,7 +53,7 @@ final class SyncStorage implements Storage {
       await _netStorage.setTasks(localTasks);
       await _localStorage.setRevision(_netStorage.revision);
     } catch (_) {
-      Logger.storage('Failed to push tasks');
+      Logger.warn('Failed to push tasks', 'storage');
     }
   }
 
@@ -82,7 +81,7 @@ final class SyncStorage implements Storage {
     T localResult = await localOper();
 
     if (!netSuccess) {
-      Logger.storage('Failed to perform operation with sync');
+      Logger.warn('Failed to perform operation with sync', 'storage');
     } else {
       // нужно ли?
       _pushTasks(); // TODO: Maybe excess _pushTasks()
@@ -93,21 +92,22 @@ final class SyncStorage implements Storage {
 
   @override
   Future<List<TaskData>> getTasks() async {
-    Logger.storage('Get tasks');
+    Logger.info('Get tasks', 'storage');
 
     final List<TaskData> netTasks;
     try {
       netTasks = await _netStorage.getTasks();
     } catch (_) {
-      Logger.storage('Failed to get tasks from net');
+      Logger.warn('Failed to get tasks from net', 'storage');
       return await _localStorage.getTasks();
     }
 
     if (_netStorage.revision == _localStorage.revision) return netTasks;
 
-    Logger.storage('Unsynchronized data');
-    Logger.storage(
+    Logger.info('Unsynchronized data', 'storage');
+    Logger.info(
       'Revision before sync: net ${_netStorage.revision} <-> local ${_localStorage.revision}',
+      'storage.sync',
     );
 
     final List<TaskData> result;
@@ -115,24 +115,25 @@ final class SyncStorage implements Storage {
     final localTasks = await _localStorage.getTasks();
 
     if (_netStorage.revision < _localStorage.revision) {
-      Logger.storage('Sync: storage -> net');
+      Logger.info('Sync: storage -> net', 'storage.sync');
       try {
         await _netStorage.setTasks(localTasks);
         result = localTasks;
       } catch (_) {
-        Logger.storage('Failed to sync');
+        Logger.warn('Failed to sync', 'storage.sync');
         return localTasks;
       }
     } else {
-      Logger.storage('Sync: net -> storage');
+      Logger.info('Sync: net -> storage', 'storage.sync');
       await _localStorage.setTasks(netTasks);
       result = netTasks;
     }
 
     await _localStorage.setRevision(_netStorage.revision);
 
-    Logger.storage(
+    Logger.info(
       'Revision after sync: net ${_netStorage.revision} <-> local ${_localStorage.revision}',
+      'storage.sync',
     );
 
     return result;
@@ -140,7 +141,7 @@ final class SyncStorage implements Storage {
 
   @override
   Future<void> setTasks(List<TaskData> tasks) async {
-    Logger.storage('Set tasks, count: ${tasks.length}');
+    Logger.info('Set tasks, count: ${tasks.length}', 'storage');
     await _doOper(
       () => _netStorage.setTasks(tasks),
       () => _localStorage.setTasks(tasks),
@@ -149,13 +150,13 @@ final class SyncStorage implements Storage {
 
   @override
   Future<TaskData> getTask(String id) async {
-    Logger.storage('Get task: $id');
+    Logger.info('Get task: $id', 'storage');
     return await _netStorage.getTask(id); // no sync for now
   }
 
   @override
   Future<void> addTask(TaskData task) async {
-    Logger.storage('Add task: ${task.id}');
+    Logger.info('Add task: ${task.id}', 'storage');
     await _doOper(
       () => _netStorage.addTask(task),
       () => _localStorage.addTask(task),
@@ -164,7 +165,7 @@ final class SyncStorage implements Storage {
 
   @override
   Future<void> updateTask(TaskData task) async {
-    Logger.storage('Update task: ${task.id}');
+    Logger.info('Update task: ${task.id}', 'storage');
     await _doOper(
       () => _netStorage.updateTask(task),
       () => _localStorage.updateTask(task),
@@ -173,7 +174,7 @@ final class SyncStorage implements Storage {
 
   @override
   Future<void> deleteTask(String id) async {
-    Logger.storage('Delete task: $id');
+    Logger.info('Delete task: $id', 'storage');
     await _doOper(
       () => _netStorage.deleteTask(id),
       () => _localStorage.deleteTask(id),

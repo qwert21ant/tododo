@@ -37,7 +37,7 @@ class _MainPageState extends State<MainPage> {
   void _onChange() => setState(() {});
 
   void _onChangeVisibility(bool newVisibility) {
-    Logger.state('Change visibility: ${newVisibility ? 'on' : 'off'}');
+    Logger.info('Change visibility: ${newVisibility ? 'on' : 'off'}', 'state');
 
     setState(() {
       visibility = newVisibility;

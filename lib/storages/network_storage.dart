@@ -70,7 +70,7 @@ final class NetStorage implements Storage {
     }
 
     final e = NetException(response.statusCode);
-    Logger.net(e.toString());
+    Logger.warn(e.toString(), 'network');
     throw e;
   }
 
