@@ -7,11 +7,8 @@ import 'core/themes.dart';
 import 'utils/logger.dart';
 import 'utils/s.dart';
 
-Future<void> main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-
-  await TaskMan.init(); // TODO: init and load after runApp
-  await TaskMan.load();
 
   runApp(const App());
 }

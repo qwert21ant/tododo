@@ -8,6 +8,8 @@ abstract class Logger {
   static void nav(String text) => dev.log(text, name: 'my.nav');
   static void state(String text) => dev.log(text, name: 'my.state');
   static void storage(String text) => dev.log(text, name: 'my.storage');
+
+  static void error(Object err) => dev.log(err.toString(), name: 'my.error');
 }
 
 class NavigatorLogger extends NavigatorObserver {

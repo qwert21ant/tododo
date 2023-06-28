@@ -25,9 +25,6 @@ final class TaskMan {
 
   static Future<void> init() async {
     await _storage.init();
-  }
-
-  static Future<void> load() async {
     _updateTasks(await _storage.getTasks());
   }
 
