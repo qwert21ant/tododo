@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:tododo/core/navigation.dart';
 import 'package:tododo/core/themes.dart';
 import 'package:tododo/core/widgets.dart';
-import 'package:tododo/core/task_man.dart';
+import 'package:tododo/core/tasks_repo.dart';
 
 import 'package:tododo/model/task.dart';
 
 import 'package:tododo/utils/s.dart';
 
-import 'package:tododo/blocs/edit_page_bloc.dart';
-
 import 'widgets/text_edit.dart';
 import 'widgets/importance_tile.dart';
 import 'widgets/date_tile.dart';
+
+import 'blocs/edit_page_bloc.dart';
 
 class EditPage extends StatelessWidget {
   final int? taskIndex;
@@ -26,7 +27,9 @@ class EditPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bloc = EditPageBloc(
-      taskIndex != null ? TaskMan.tasks[taskIndex!] : TaskData(text: ''),
+      taskIndex != null
+          ? TasksRepository.of(context).state.tasks[taskIndex!]
+          : TaskData(text: ''),
     );
 
     return BlocProvider<EditPageBloc>(
@@ -46,9 +49,10 @@ class EditPage extends StatelessWidget {
                 TextButton(
                   onPressed: () {
                     if (taskIndex == null) {
-                      TaskMan.addTask(bloc.state);
+                      TasksRepository.of(context).addTask(bloc.state);
                     } else {
-                      TaskMan.changeTask(taskIndex!, bloc.state);
+                      TasksRepository.of(context)
+                          .changeTask(taskIndex!, bloc.state);
                     }
                     _goBack();
                   },
@@ -94,7 +98,7 @@ class EditPage extends StatelessWidget {
                           : AppTheme.red,
                     ),
                     onTap: () {
-                      TaskMan.removeTask(taskIndex!);
+                      TasksRepository.of(context).removeTask(taskIndex!);
                       _goBack();
                     },
                   ),

@@ -7,7 +7,7 @@ import 'package:tododo/core/widgets.dart';
 
 import 'package:tododo/utils/s.dart';
 
-import 'package:tododo/blocs/edit_page_bloc.dart';
+import 'package:tododo/pages/edit_page/blocs/edit_page_bloc.dart';
 
 import 'package:tododo/model/task.dart';
 

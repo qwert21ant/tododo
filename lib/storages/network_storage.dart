@@ -79,6 +79,8 @@ final class NetStorage implements Storage {
     String path, [
     JsonObject? body,
   ]) async {
+    // return Future.delayed(const Duration(milliseconds: 250), () => Future.error('bababa'));
+
     final request = Request(method, Uri.parse('$baseUrl/$path'));
 
     // Headers

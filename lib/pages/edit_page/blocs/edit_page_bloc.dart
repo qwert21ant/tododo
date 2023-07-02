@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:tododo/model/task.dart';
 
 class EditPageBloc extends Cubit<TaskData> {

@@ -2,54 +2,45 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:tododo/core/themes.dart';
 import 'package:tododo/core/widgets.dart';
-import 'package:tododo/core/task_man.dart';
+import 'package:tododo/core/tasks_repo.dart';
 
 import 'package:tododo/utils/s.dart';
 
-class MyAppBar extends StatefulWidget {
+import '../blocs/tasks_visibility_bloc.dart';
+
+class MyAppBar extends StatelessWidget {
   final double collapsedHeight;
   final double expandedHeight;
-  final void Function(bool) onChange;
 
   const MyAppBar({
     super.key,
     required this.collapsedHeight,
     required this.expandedHeight,
-    required this.onChange,
   });
-
-  @override
-  State<MyAppBar> createState() => _MyAppBarState();
-}
-
-class _MyAppBarState extends State<MyAppBar> {
-  late bool visibility;
-
-  @override
-  void initState() {
-    super.initState();
-
-    visibility = false;
-  }
 
   @override
   Widget build(BuildContext context) {
     return SliverPersistentHeader(
       pinned: true,
       delegate: _MyDelegate(
-        collapsedHeight: widget.collapsedHeight,
-        expandedHeight: widget.expandedHeight,
-        iconButton: MyIconButton(
-          icon: visibility ? Icons.visibility_off : Icons.visibility,
-          iconColor: AppTheme.blue,
-          backgroundColor: AppTheme.backPrimary,
-          onPressed: () {
-            setState(() {
-              visibility = !visibility;
-              widget.onChange(visibility);
-            });
+        collapsedHeight: collapsedHeight,
+        expandedHeight: expandedHeight,
+        iconButton: BlocBuilder<TasksVisibilityBloc, bool>(
+          builder: (context, state) {
+            return MyIconButton(
+              icon: state ? Icons.visibility_off : Icons.visibility,
+              iconColor: AppTheme.blue,
+              backgroundColor: AppTheme.backPrimary,
+              onPressed: () {
+                final bloc = context.read<TasksVisibilityBloc>();
+
+                bloc.switchVisibility();
+              },
+            );
           },
         ),
       ),
@@ -134,9 +125,9 @@ class _MyDelegate extends SliverPersistentHeaderDelegate {
                         padding: const EdgeInsets.only(bottom: 10),
                         child: Opacity(
                           opacity: (1.0 - perc * 2).clamp(0.0, 1.0),
-                          child: ValueListenableBuilder<int>(
-                            valueListenable: TaskMan.doneCount,
-                            builder: (context, value, _) => MyText(
+                          child: BlocSelector<TasksRepository, TasksState, int>(
+                            selector: (state) => state.doneCount,
+                            builder: (context, value) => MyText(
                               '${S.of(context)['done']} — $value',
                               fontSize: interp(16, 10),
                               color: AppTheme.labelTertiary,

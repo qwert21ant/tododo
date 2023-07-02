@@ -25,8 +25,7 @@ abstract class NavMan {
   static Future<dynamic> openEditPage([int? taskIndex]) =>
       _nav.pushNamed(Routes.edit, arguments: taskIndex);
 
-  static Future<void> openMainPage() =>
-      _nav.pushReplacementNamed(Routes.main);
+  static Future<void> openMainPage() => _nav.pushReplacementNamed(Routes.main);
 
   static void pop() => _nav.pop();
 }

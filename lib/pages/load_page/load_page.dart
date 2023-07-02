@@ -1,64 +1,57 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:tododo/core/navigation.dart';
-import 'package:tododo/core/task_man.dart';
+import 'package:tododo/core/tasks_repo.dart';
 import 'package:tododo/core/themes.dart';
 import 'package:tododo/core/widgets.dart';
 
-import 'package:tododo/utils/logger.dart';
 import 'package:tododo/utils/s.dart';
 
-class LoadPage extends StatefulWidget {
+class LoadPage extends StatelessWidget {
   const LoadPage({super.key});
 
   @override
-  State<LoadPage> createState() => _LoadPageState();
-}
-
-class _LoadPageState extends State<LoadPage> {
-  String? _error;
-
-  Future<void> _initApp() async {
-    try {
-      await TaskMan.init();
-      NavMan.openMainPage();
-    } catch (e) {
-      Logger.error(e.toString(), 'init');
-
-      setState(() {
-        _error = e.toString();
-      });
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    _initApp();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final content = _error == null
-        ? const CircularProgressIndicator()
-        : FittedBox(
-            child: Column(
-              children: [
-                const Icon(
-                  Icons.warning_amber,
-                  color: AppTheme.red,
-                  size: 40,
-                ),
-                MyText(S.of(context)['initError'])
-              ],
-            ),
-          );
-
     return Scaffold(
       body: SafeArea(
-        child: Center(
-          child: Center(child: content),
+        child: BlocConsumer<TasksRepository, TasksState>(
+          listener: (context, state) {
+            if (state.isInitialized && !state.hasInitError) {
+              NavMan.openMainPage();
+            }
+          },
+          builder: (context, state) {
+            if (!state.isInitialized) {
+              return const Center(
+                child: Center(child: CircularProgressIndicator()),
+              );
+            } else if (state.hasInitError) {
+              return Center(
+                child: FittedBox(
+                  child: Column(
+                    children: [
+                      const Icon(
+                        Icons.warning_amber,
+                        color: AppTheme.red,
+                        size: 40,
+                      ),
+                      MyText(S.of(context)['initError'])
+                    ],
+                  ),
+                ),
+              );
+            } else {
+              return const Center(
+                child: Icon(
+                  Icons.check_circle_outline,
+                  color: AppTheme.green,
+                  size: 40,
+                ),
+              );
+            }
+          },
         ),
       ),
     );

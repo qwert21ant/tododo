@@ -2,11 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import 'package:tododo/core/task_man.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:tododo/core/tasks_repo.dart';
 import 'package:tododo/core/themes.dart';
 import 'package:tododo/core/widgets.dart';
+import 'package:tododo/core/navigation.dart';
 
 import 'package:tododo/model/task.dart';
+import 'package:tododo/pages/main_page/blocs/tasks_visibility_bloc.dart';
 
 import 'package:tododo/utils/utils.dart';
 
@@ -15,16 +19,10 @@ import 'dismissible_background.dart';
 class ListItem extends StatefulWidget {
   final int taskIndex;
   final bool clipTop;
-  final bool visibility;
-  final void Function() onChange;
-  final void Function(int) openEditPage;
 
   const ListItem(
     this.taskIndex, {
     this.clipTop = false,
-    required this.onChange,
-    required this.openEditPage,
-    required this.visibility,
     super.key,
   });
 
@@ -35,21 +33,8 @@ class ListItem extends StatefulWidget {
 class _ListItemState extends State<ListItem> {
   late StreamController<double> streamController;
 
-  TaskData get _task => TaskMan.tasks[widget.taskIndex];
-
-  void _switchDone() {
-    setState(() {
-      TaskMan.switchDone(widget.taskIndex);
-    });
-  }
-
-  void _removeTask() {
-    TaskMan.removeTask(widget.taskIndex);
-    widget.onChange();
-  }
-
   void _showInfo() {
-    widget.openEditPage(widget.taskIndex);
+    NavMan.openEditPage(widget.taskIndex);
   }
 
   @override
@@ -68,15 +53,17 @@ class _ListItemState extends State<ListItem> {
 
   @override
   Widget build(BuildContext context) {
+    final task = TasksRepository.of(context).state.tasks[widget.taskIndex];
+
     InlineSpan? iconSpan;
 
-    if (_task.isDone) {
+    if (task.isDone) {
       iconSpan = null;
-    } else if (_task.importance == TaskImportance.low) {
+    } else if (task.importance == TaskImportance.low) {
       iconSpan = const WidgetSpan(
         child: Icon(Icons.arrow_downward, color: AppTheme.gray, size: 20),
       );
-    } else if (_task.importance == TaskImportance.high) {
+    } else if (task.importance == TaskImportance.high) {
       iconSpan = TextSpan(
         text: ' !! ',
         style: AppTheme.body.copyWith(
@@ -97,43 +84,43 @@ class _ListItemState extends State<ListItem> {
         children: [
           if (iconSpan != null) iconSpan,
           TextSpan(
-            text: _task.text,
+            text: task.text,
             style: AppTheme.body.copyWith(
-              color: _task.isDone ? AppTheme.labelTertiary : null,
-              decoration: _task.isDone ? TextDecoration.lineThrough : null,
+              color: task.isDone ? AppTheme.labelTertiary : null,
+              decoration: task.isDone ? TextDecoration.lineThrough : null,
             ),
           ),
         ],
       ),
     );
 
-    final subtitle = _task.date != null
+    final subtitle = task.date != null
         ? MyText(
-            formatDate(_task.date),
+            formatDate(task.date),
             fontSize: 14,
             color: AppTheme.labelTertiary,
           )
         : null;
 
     Widget item = Dismissible(
-      key: ValueKey(_task.id),
+      key: ValueKey(task.id),
       onUpdate: (details) {
         streamController.add(details.progress);
       },
       confirmDismiss: (dir) async {
         if (dir == DismissDirection.startToEnd) {
-          _switchDone();
+          TasksRepository.of(context).switchDone(widget.taskIndex);
 
-          return !widget.visibility;
+          return !context.read<TasksVisibilityBloc>().state;
         }
 
         return true;
       },
       onDismissed: (dir) {
         if (dir == DismissDirection.endToStart) {
-          _removeTask();
+          TasksRepository.of(context).removeTask(widget.taskIndex);
         } else {
-          widget.onChange();
+          TasksRepository.of(context).switchDone(widget.taskIndex);
         }
       },
       background: DismissibleBackground(
@@ -163,18 +150,21 @@ class _ListItemState extends State<ListItem> {
               return AppTheme.green;
             }
 
-            return _task.importance == TaskImportance.high
+            return task.importance == TaskImportance.high
                 ? AppTheme.red
                 : AppTheme.labelTertiary;
           }),
-          value: _task.isDone,
+          value: task.isDone,
           onChanged: (value) {
             if (value == null) return;
 
-            if (!_task.isDone && !widget.visibility) {
-              widget.onChange();
-            }
-            _switchDone();
+            // if (!task.isDone && !widget.visibility) {
+            //   widget.onChange();
+            // }
+
+            setState(() {
+              TasksRepository.of(context).switchDone(widget.taskIndex);
+            });
           },
         ),
         title: title,
