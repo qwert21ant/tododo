@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:tododo/core/themes.dart';
 
 import 'package:tododo/utils/s.dart';
 
-class TextEdit extends StatefulWidget {
-  final String? text;
-  final void Function(String) onChange;
+import 'package:tododo/blocs/edit_page_bloc.dart';
 
-  const TextEdit({super.key, this.text, required this.onChange});
+class TextEdit extends StatefulWidget {
+  final String? initialValue;
+
+  const TextEdit({super.key, this.initialValue});
 
   @override
   State<TextEdit> createState() => _TextEditState();
@@ -21,7 +23,7 @@ class _TextEditState extends State<TextEdit> {
   void initState() {
     super.initState();
 
-    if (widget.text != null) controller.text = widget.text!;
+    controller.text = widget.initialValue ?? '';
   }
 
   @override
@@ -32,6 +34,8 @@ class _TextEditState extends State<TextEdit> {
 
   @override
   Widget build(BuildContext context) {
+    final bloc = context.read<EditPageBloc>();
+
     return Container(
       decoration: BoxDecoration(
         color: AppTheme.backSecondary,
@@ -49,7 +53,9 @@ class _TextEditState extends State<TextEdit> {
       constraints: const BoxConstraints(minHeight: 104),
       child: TextField(
         controller: controller,
-        onChanged: widget.onChange,
+        onChanged: (String text) {
+          bloc.updateText(text);
+        },
         keyboardType: TextInputType.multiline,
         maxLines: null,
         decoration: InputDecoration(
