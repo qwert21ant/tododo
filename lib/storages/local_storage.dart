@@ -9,11 +9,7 @@ import 'storage.dart';
 final class LocalStorage implements Storage {
   static const dbName = 'tasks.db';
 
-  static final LocalStorage _instance = LocalStorage._();
-
-  LocalStorage._();
-
-  factory LocalStorage() => _instance;
+  LocalStorage();
 
   late final Database _db;
   final _store = StoreRef<String, Map<String, Object?>>.main();

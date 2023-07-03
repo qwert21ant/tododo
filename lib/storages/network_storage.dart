@@ -40,11 +40,7 @@ final class NetStorage implements Storage {
 
   static int? failsThreshold;
 
-  static final NetStorage _instance = NetStorage._();
-
-  NetStorage._();
-
-  factory NetStorage() => _instance;
+  NetStorage();
 
   int _revision = -1;
 
@@ -79,7 +75,7 @@ final class NetStorage implements Storage {
     String path, [
     JsonObject? body,
   ]) async {
-    // return Future.delayed(const Duration(milliseconds: 250), () => Future.error('bababa'));
+    // return Future.delayed(const Duration(milliseconds: 2000), () => Future.error('bababa'));
 
     final request = Request(method, Uri.parse('$baseUrl/$path'));
 

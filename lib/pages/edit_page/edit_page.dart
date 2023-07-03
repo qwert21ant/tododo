@@ -47,11 +47,11 @@ class EditPage extends StatelessWidget {
               ),
               actions: [
                 TextButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (taskIndex == null) {
-                      TasksRepository.of(context).addTask(bloc.state);
+                      await TasksRepository.of(context).addTask(bloc.state);
                     } else {
-                      TasksRepository.of(context)
+                      await TasksRepository.of(context)
                           .changeTask(taskIndex!, bloc.state);
                     }
                     _goBack();
@@ -97,8 +97,8 @@ class EditPage extends StatelessWidget {
                           ? AppTheme.labelDisable
                           : AppTheme.red,
                     ),
-                    onTap: () {
-                      TasksRepository.of(context).removeTask(taskIndex!);
+                    onTap: () async {
+                      await TasksRepository.of(context).removeTask(taskIndex!);
                       _goBack();
                     },
                   ),

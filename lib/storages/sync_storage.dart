@@ -1,3 +1,7 @@
+import 'dart:async';
+
+import 'package:synchronized/synchronized.dart';
+
 import 'package:tododo/model/task.dart';
 
 import 'package:tododo/utils/logger.dart';
@@ -6,25 +10,16 @@ import 'storage.dart';
 import 'local_storage.dart';
 import 'network_storage.dart';
 
-// TODO: add stream for net queries
-// Добавить чёт типа стрима для net запросов
-// т.к. если часто тыкать то запросы кидаются не по порядку
-// или просто revision не успевает обновляться
-
 final class SyncStorage implements Storage {
-  static final SyncStorage _instance = SyncStorage._();
-
-  SyncStorage._();
-
-  factory SyncStorage() => _instance;
+  SyncStorage();
 
   final LocalStorage _localStorage = LocalStorage();
   final NetStorage _netStorage = NetStorage();
 
-  late int _revision;
+  final Lock _lock = Lock();
 
   @override
-  int get revision => _revision;
+  int get revision => _localStorage.revision;
 
   Future<void> init() async {
     await _localStorage.init();
@@ -57,37 +52,36 @@ final class SyncStorage implements Storage {
     }
   }
 
-  Future<T> _doOper<T>(
-    Future<T> Function() netOper,
-    Future<T> Function() localOper,
+  Future<void> _doOper(
+    Future<void> Function() netOper,
+    Future<void> Function() localOper,
   ) async {
-    bool netSuccess = false;
-    T? netResult;
+    await localOper();
 
-    try {
-      netResult = await netOper();
-      netSuccess = true;
-    } on NetException catch (e) {
-      if (e.isUnsync) {
-        await _pushTasks();
+    _lock.synchronized(() async {
+      bool netSuccess = false;
 
-        try {
-          netResult = await netOper();
-          netSuccess = true;
-        } catch (_) {}
+      try {
+        await netOper();
+        netSuccess = true;
+      } on NetException catch (e) {
+        if (e.isUnsync) {
+          await _pushTasks();
+
+          try {
+            await netOper();
+            netSuccess = true;
+          } catch (_) {}
+        }
+      } catch (_) {}
+
+      if (!netSuccess) {
+        Logger.warn('Failed to perform operation with sync', 'storage');
+      } else {
+        // нужно ли?
+        _pushTasks(); // TODO: Maybe excess _pushTasks()
       }
-    } catch (_) {}
-
-    T localResult = await localOper();
-
-    if (!netSuccess) {
-      Logger.warn('Failed to perform operation with sync', 'storage');
-    } else {
-      // нужно ли?
-      _pushTasks(); // TODO: Maybe excess _pushTasks()
-    }
-
-    return netResult ?? localResult;
+    });
   }
 
   @override

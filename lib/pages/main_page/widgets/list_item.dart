@@ -109,9 +109,12 @@ class _ListItemState extends State<ListItem> {
       },
       confirmDismiss: (dir) async {
         if (dir == DismissDirection.startToEnd) {
-          TasksRepository.of(context).switchDone(widget.taskIndex);
+          final visibility = context.read<TasksVisibilityBloc>().state;
+          if (visibility) {
+            TasksRepository.of(context).switchDone(widget.taskIndex);
+          }
 
-          return !context.read<TasksVisibilityBloc>().state;
+          return !visibility;
         }
 
         return true;
