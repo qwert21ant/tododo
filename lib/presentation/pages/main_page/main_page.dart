@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:tododo/core/navigation.dart';
 import 'package:tododo/core/themes.dart';
+
+import 'package:tododo/presentation/navigation/navigation_provider.dart';
 
 import 'widgets/app_bar.dart';
 import 'widgets/task_list.dart';
@@ -12,10 +13,6 @@ import 'blocs/tasks_visibility_bloc.dart';
 
 class MainPage extends StatelessWidget {
   const MainPage({super.key});
-
-  Future<void> _openEditPage([int? taskIndex]) async {
-    await NavMan.openEditPage(taskIndex);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +23,9 @@ class MainPage extends StatelessWidget {
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
           backgroundColor: AppTheme.blue,
-          onPressed: _openEditPage,
+          onPressed: () {
+            context.read<NavigationProvider>().openEditPage();
+          },
           child: const Icon(Icons.add),
         ),
         body: const SafeArea(

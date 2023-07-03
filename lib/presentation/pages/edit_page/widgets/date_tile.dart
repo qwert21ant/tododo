@@ -7,9 +7,9 @@ import 'package:tododo/core/widgets.dart';
 import 'package:tododo/utils/utils.dart';
 import 'package:tododo/utils/s.dart';
 
-import 'package:tododo/pages/edit_page/blocs/edit_page_bloc.dart';
-
 import 'package:tododo/model/task.dart';
+
+import '../blocs/edit_page_bloc.dart';
 
 class DateTile extends StatelessWidget {
   const DateTile({super.key});

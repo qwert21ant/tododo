@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:tododo/core/navigation.dart';
 import 'package:tododo/core/tasks_repo.dart';
 import 'package:tododo/core/themes.dart';
 import 'package:tododo/core/widgets.dart';
+import 'package:tododo/presentation/navigation/navigation_provider.dart';
 
 import 'package:tododo/utils/s.dart';
 
@@ -19,7 +19,7 @@ class LoadPage extends StatelessWidget {
         child: BlocConsumer<TasksRepository, TasksState>(
           listener: (context, state) {
             if (state.isInitialized && !state.hasInitError) {
-              NavMan.openMainPage();
+              NavigationProvider.of(context).openMainPage();
             }
           },
           builder: (context, state) {
@@ -45,9 +45,9 @@ class LoadPage extends StatelessWidget {
             } else {
               return const Center(
                 child: Icon(
-                  Icons.check_circle_outline,
+                  Icons.check,
                   color: AppTheme.green,
-                  size: 40,
+                  size: 50,
                 ),
               );
             }

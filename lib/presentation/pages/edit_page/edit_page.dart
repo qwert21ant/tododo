@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:tododo/core/navigation.dart';
 import 'package:tododo/core/themes.dart';
 import 'package:tododo/core/widgets.dart';
 import 'package:tododo/core/tasks_repo.dart';
 
 import 'package:tododo/model/task.dart';
+import 'package:tododo/presentation/navigation/navigation_provider.dart';
 
 import 'package:tododo/utils/s.dart';
 
@@ -21,8 +21,6 @@ class EditPage extends StatelessWidget {
   final int? taskIndex;
 
   const EditPage({super.key, this.taskIndex});
-
-  void _goBack() => NavMan.pop();
 
   @override
   Widget build(BuildContext context) {
@@ -43,18 +41,22 @@ class EditPage extends StatelessWidget {
                 icon: Icons.close,
                 iconColor: AppTheme.labelPrimary,
                 backgroundColor: AppTheme.backPrimary,
-                onPressed: () => _goBack(),
+                onPressed: () {
+                  context.read<NavigationProvider>().pop();
+                },
               ),
               actions: [
                 TextButton(
                   onPressed: () async {
+                    final nav = NavigationProvider.of(context);
+
                     if (taskIndex == null) {
                       await TasksRepository.of(context).addTask(bloc.state);
                     } else {
                       await TasksRepository.of(context)
                           .changeTask(taskIndex!, bloc.state);
                     }
-                    _goBack();
+                    nav.pop();
                   },
                   child: MyText(S.of(context)['save'], color: AppTheme.blue),
                 ),
@@ -98,8 +100,11 @@ class EditPage extends StatelessWidget {
                           : AppTheme.red,
                     ),
                     onTap: () async {
+                      final nav = NavigationProvider.of(context);
+
                       await TasksRepository.of(context).removeTask(taskIndex!);
-                      _goBack();
+
+                      nav.pop();
                     },
                   ),
                   const SizedBox(height: 32)

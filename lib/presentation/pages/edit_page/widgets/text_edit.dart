@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:tododo/core/themes.dart';
 
 import 'package:tododo/utils/s.dart';
 
-import 'package:tododo/pages/edit_page/blocs/edit_page_bloc.dart';
+import '../blocs/edit_page_bloc.dart';
 
 class TextEdit extends StatefulWidget {
   final String? initialValue;

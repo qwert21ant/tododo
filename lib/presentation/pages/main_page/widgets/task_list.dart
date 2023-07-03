@@ -5,9 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tododo/core/themes.dart';
 import 'package:tododo/core/tasks_repo.dart';
 import 'package:tododo/core/widgets.dart';
-import 'package:tododo/core/navigation.dart';
 
 import 'package:tododo/utils/s.dart';
+
+import 'package:tododo/presentation/navigation/navigation_provider.dart';
 
 import 'sliver_container.dart';
 import 'list_item.dart';
@@ -32,7 +33,7 @@ class TaskList extends StatelessWidget {
           child: MyListTile(
             title: MyText(S.of(context)['new'], color: AppTheme.labelTertiary),
             onTap: () {
-              NavMan.openEditPage();
+              context.read<NavigationProvider>().openEditPage();
             },
           ),
         )
@@ -44,7 +45,7 @@ class TaskList extends StatelessWidget {
           child: MyListTile(
             title: MyText(S.of(context)['new'], color: AppTheme.labelTertiary),
             onTap: () {
-              NavMan.openEditPage();
+              context.read<NavigationProvider>().openEditPage();
             },
           ),
         )

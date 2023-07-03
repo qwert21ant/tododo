@@ -7,12 +7,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tododo/core/tasks_repo.dart';
 import 'package:tododo/core/themes.dart';
 import 'package:tododo/core/widgets.dart';
-import 'package:tododo/core/navigation.dart';
 
 import 'package:tododo/model/task.dart';
-import 'package:tododo/pages/main_page/blocs/tasks_visibility_bloc.dart';
+
+import 'package:tododo/presentation/navigation/navigation_provider.dart';
 
 import 'package:tododo/utils/utils.dart';
+
+import '../blocs/tasks_visibility_bloc.dart';
 
 import 'dismissible_background.dart';
 
@@ -32,10 +34,6 @@ class ListItem extends StatefulWidget {
 
 class _ListItemState extends State<ListItem> {
   late StreamController<double> streamController;
-
-  void _showInfo() {
-    NavMan.openEditPage(widget.taskIndex);
-  }
 
   @override
   void initState() {
@@ -146,7 +144,9 @@ class _ListItemState extends State<ListItem> {
         ),
       ),
       child: MyListTile(
-        onTap: _showInfo,
+        onTap: () {
+          context.read<NavigationProvider>().openEditPage(widget.taskIndex);
+        },
         leading: Checkbox(
           fillColor: MaterialStateColor.resolveWith((states) {
             if (states.contains(MaterialState.selected)) {
@@ -160,10 +160,6 @@ class _ListItemState extends State<ListItem> {
           value: task.isDone,
           onChanged: (value) {
             if (value == null) return;
-
-            // if (!task.isDone && !widget.visibility) {
-            //   widget.onChange();
-            // }
 
             setState(() {
               TasksRepository.of(context).switchDone(widget.taskIndex);
