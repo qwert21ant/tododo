@@ -1,4 +1,4 @@
-enum Routes { main, edit, load }
+enum Routes { main, edit }
 
 class NavigationState {
   Routes name;

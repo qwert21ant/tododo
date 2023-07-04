@@ -77,6 +77,8 @@ class TasksRepository extends Cubit<TasksState> {
   }
 
   Future<void> init() async {
+    if (state.isInitialized) return;
+
     try {
       await _storage.init();
 

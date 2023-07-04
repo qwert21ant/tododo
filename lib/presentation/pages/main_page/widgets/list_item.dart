@@ -4,13 +4,15 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:get_it/get_it.dart';
+
 import 'package:tododo/core/tasks_repo.dart';
 import 'package:tododo/core/themes.dart';
 import 'package:tododo/core/widgets.dart';
 
 import 'package:tododo/model/task.dart';
 
-import 'package:tododo/presentation/navigation/navigation_provider.dart';
+import 'package:tododo/presentation/navigation/navigation_manager.dart';
 
 import 'package:tododo/utils/utils.dart';
 
@@ -145,7 +147,7 @@ class _ListItemState extends State<ListItem> {
       ),
       child: MyListTile(
         onTap: () {
-          context.read<NavigationProvider>().openEditPage(widget.taskIndex);
+          GetIt.I<NavMan>().openEditPage(widget.taskIndex);
         },
         leading: Checkbox(
           fillColor: MaterialStateColor.resolveWith((states) {

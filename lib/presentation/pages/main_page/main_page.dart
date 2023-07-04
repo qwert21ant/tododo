@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:get_it/get_it.dart';
+
 import 'package:tododo/core/themes.dart';
 
-import 'package:tododo/presentation/navigation/navigation_provider.dart';
+import 'package:tododo/presentation/navigation/navigation_manager.dart';
 
 import 'widgets/app_bar.dart';
 import 'widgets/task_list.dart';
@@ -24,7 +26,7 @@ class MainPage extends StatelessWidget {
         floatingActionButton: FloatingActionButton(
           backgroundColor: AppTheme.blue,
           onPressed: () {
-            context.read<NavigationProvider>().openEditPage();
+            GetIt.I<NavMan>().openEditPage();
           },
           child: const Icon(Icons.add),
         ),

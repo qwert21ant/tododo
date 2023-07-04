@@ -7,19 +7,25 @@ import 'package:tododo/core/themes.dart';
 
 import 'package:tododo/utils/s.dart';
 
+import 'package:get_it/get_it.dart';
+
 import 'navigation/router_delegate.dart';
 import 'navigation/route_information_parser.dart';
+import 'navigation/navigation_manager.dart';
 
 class App extends StatelessWidget {
   final _routerDelegate = MyRouterDelegate();
   final _routeInformationParser = MyRouteInformationParser();
+  final _taskRepo = TasksRepository();
 
-  App({super.key});
+  App({super.key}) {
+    GetIt.I.registerSingleton<NavMan>(NavMan(_routerDelegate));
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<TasksRepository>(
-      create: (context) => TasksRepository()..init(),
+      create: (context) => _taskRepo..init(),
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
         supportedLocales: S.supportedLocales,

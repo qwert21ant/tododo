@@ -2,15 +2,21 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:get_it/get_it.dart';
+
 import 'package:tododo/core/tasks_repo.dart';
 import 'package:tododo/core/themes.dart';
 import 'package:tododo/core/widgets.dart';
-import 'package:tododo/presentation/navigation/navigation_provider.dart';
+
+import 'package:tododo/presentation/navigation/navigation_manager.dart';
+import 'package:tododo/presentation/navigation/navigation_state.dart';
 
 import 'package:tododo/utils/s.dart';
 
 class LoadPage extends StatelessWidget {
-  const LoadPage({super.key});
+  final NavigationState nextPage;
+
+  const LoadPage({required this.nextPage, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +25,7 @@ class LoadPage extends StatelessWidget {
         child: BlocConsumer<TasksRepository, TasksState>(
           listener: (context, state) {
             if (state.isInitialized && !state.hasInitError) {
-              NavigationProvider.of(context).openMainPage();
+              GetIt.I<NavMan>().openPage(nextPage);
             }
           },
           builder: (context, state) {

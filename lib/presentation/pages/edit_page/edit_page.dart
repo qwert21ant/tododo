@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:get_it/get_it.dart';
+
 import 'package:tododo/core/themes.dart';
 import 'package:tododo/core/widgets.dart';
 import 'package:tododo/core/tasks_repo.dart';
 
 import 'package:tododo/model/task.dart';
-import 'package:tododo/presentation/navigation/navigation_provider.dart';
+import 'package:tododo/presentation/navigation/navigation_manager.dart';
 
 import 'package:tododo/utils/s.dart';
 
@@ -42,21 +44,20 @@ class EditPage extends StatelessWidget {
                 iconColor: AppTheme.labelPrimary,
                 backgroundColor: AppTheme.backPrimary,
                 onPressed: () {
-                  context.read<NavigationProvider>().pop();
+                  GetIt.I<NavMan>().openMainPage();
                 },
               ),
               actions: [
                 TextButton(
                   onPressed: () async {
-                    final nav = NavigationProvider.of(context);
-
                     if (taskIndex == null) {
                       await TasksRepository.of(context).addTask(bloc.state);
                     } else {
                       await TasksRepository.of(context)
                           .changeTask(taskIndex!, bloc.state);
                     }
-                    nav.pop();
+
+                    GetIt.I<NavMan>().openMainPage();
                   },
                   child: MyText(S.of(context)['save'], color: AppTheme.blue),
                 ),
@@ -100,11 +101,9 @@ class EditPage extends StatelessWidget {
                           : AppTheme.red,
                     ),
                     onTap: () async {
-                      final nav = NavigationProvider.of(context);
-
                       await TasksRepository.of(context).removeTask(taskIndex!);
 
-                      nav.pop();
+                      GetIt.I<NavMan>().openMainPage();
                     },
                   ),
                   const SizedBox(height: 32)
