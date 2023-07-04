@@ -8,9 +8,13 @@ import 'package:tododo/core/themes.dart';
 import 'package:tododo/utils/s.dart';
 
 import 'navigation/router_delegate.dart';
+import 'navigation/route_information_parser.dart';
 
 class App extends StatelessWidget {
-  const App({super.key});
+  final _routerDelegate = MyRouterDelegate();
+  final _routeInformationParser = MyRouteInformationParser();
+
+  App({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +28,8 @@ class App extends StatelessWidget {
         theme: lightTheme,
         scrollBehavior:
             const MaterialScrollBehavior().copyWith(scrollbars: false),
-        routerDelegate: MyRouterDelegate(),
+        routerDelegate: _routerDelegate,
+        routeInformationParser: _routeInformationParser,
       ),
     );
   }
