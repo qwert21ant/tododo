@@ -21,36 +21,52 @@ final class SyncStorage implements Storage {
   @override
   int get revision => _localStorage.revision;
 
+  int _nNetRequests = 0;
+
+  Future<void> _incNRequests() async {
+    if (_nNetRequests != 0) {
+      await _localStorage.setOnlineStatus(false);
+    }
+    _nNetRequests++;
+  }
+
+  Future<void> _decNRequests() async {
+    _nNetRequests--;
+    if (_nNetRequests == 0) {
+      await _localStorage.setOnlineStatus(true);
+    }
+  }
+
   Future<void> init() async {
     await _localStorage.init();
   }
 
-  Future<void> _pushTasks() async {
-    if (_netStorage.revision == _localStorage.revision) return;
-
-    Logger.info('Push tasks', 'storage');
-
-    // Костыль?
-    // если ни разу не получали revision
-    // то по умолчанию он равен -1, и тогда будем получать 400
-    if (_netStorage.revision == -1) {
-      // TODO: NetStorage.revision = -1
-      try {
-        await _netStorage.getTasks();
-      } catch (_) {
-        Logger.warn('Failed to push tasks', 'storage');
-        return;
-      }
-    }
-
-    final localTasks = await _localStorage.getTasks();
-    try {
-      await _netStorage.setTasks(localTasks);
-      await _localStorage.setRevision(_netStorage.revision);
-    } catch (_) {
-      Logger.warn('Failed to push tasks', 'storage');
-    }
-  }
+  // Future<void> _pushTasks() async {
+  //   if (_netStorage.revision == _localStorage.revision) return;
+  //
+  //   Logger.info('Push tasks', 'storage');
+  //
+  //   // Костыль?
+  //   // если ни разу не получали revision
+  //   // то по умолчанию он равен -1, и тогда будем получать 400
+  //   if (_netStorage.revision == -1) {
+  //     // TODO: NetStorage.revision = -1
+  //     try {
+  //       await _netStorage.getTasks();
+  //     } catch (_) {
+  //       Logger.warn('Failed to push tasks', 'storage');
+  //       return;
+  //     }
+  //   }
+  //
+  //   final localTasks = await _localStorage.getTasks();
+  //   try {
+  //     await _netStorage.setTasks(localTasks);
+  //     await _localStorage.setRevision(_netStorage.revision);
+  //   } catch (_) {
+  //     Logger.warn('Failed to push tasks', 'storage');
+  //   }
+  // }
 
   Future<void> _doOper(
     Future<void> Function() netOper,
@@ -58,29 +74,37 @@ final class SyncStorage implements Storage {
   ) async {
     await localOper();
 
+    await _incNRequests();
     _lock.synchronized(() async {
       bool netSuccess = false;
 
       try {
         await netOper();
         netSuccess = true;
-      } on NetException catch (e) {
-        if (e.isUnsync) {
-          await _pushTasks();
-
-          try {
-            await netOper();
-            netSuccess = true;
-          } catch (_) {}
-        }
-      } catch (_) {}
+      }
+      // on NetException catch (e) {
+      //   if (e.isUnsync) {
+      //     await _pushTasks();
+      //
+      //     try {
+      //       await netOper();
+      //       netSuccess = true;
+      //     } catch (_) {}
+      //   }
+      // }
+      catch (_) {}
 
       if (!netSuccess) {
         Logger.warn('Failed to perform operation with sync', 'storage');
       } else {
+        await _decNRequests();
+        // await _localStorage.setRevision(_netStorage.revision);
+
         // нужно ли?
-        _pushTasks(); // TODO: Maybe excess _pushTasks()
+        // await _pushTasks();
       }
+
+      await _localStorage.incRevision();
     });
   }
 
@@ -93,10 +117,14 @@ final class SyncStorage implements Storage {
       netTasks = await _netStorage.getTasks();
     } catch (_) {
       Logger.warn('Failed to get tasks from net', 'storage');
+      await _localStorage.setOnlineStatus(false);
       return await _localStorage.getTasks();
     }
 
-    if (_netStorage.revision == _localStorage.revision) return netTasks;
+    if (_netStorage.revision == _localStorage.revision &&
+        _localStorage.wasOnline) {
+      return await _localStorage.getTasks();
+    }
 
     Logger.info('Unsynchronized data', 'storage');
     Logger.info(
@@ -108,13 +136,15 @@ final class SyncStorage implements Storage {
 
     final localTasks = await _localStorage.getTasks();
 
-    if (_netStorage.revision < _localStorage.revision) {
+    if (_netStorage.revision < _localStorage.revision ||
+        !_localStorage.wasOnline) {
       Logger.info('Sync: storage -> net', 'storage.sync');
       try {
         await _netStorage.setTasks(localTasks);
         result = localTasks;
       } catch (_) {
         Logger.warn('Failed to sync', 'storage.sync');
+        await _localStorage.setOnlineStatus(false);
         return localTasks;
       }
     } else {
@@ -124,6 +154,7 @@ final class SyncStorage implements Storage {
     }
 
     await _localStorage.setRevision(_netStorage.revision);
+    await _localStorage.setOnlineStatus(true);
 
     Logger.info(
       'Revision after sync: net ${_netStorage.revision} <-> local ${_localStorage.revision}',
