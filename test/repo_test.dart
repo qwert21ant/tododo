@@ -5,7 +5,7 @@ import 'package:tododo/model/task.dart';
 
 import 'mocks/task_storage_mock.dart';
 
-import 'tasks.dart';
+import 'utils/tasks.dart';
 import 'utils/utils.dart';
 
 void main() {
@@ -19,18 +19,18 @@ void main() {
     await repo.init();
   });
 
-  test('Init', () async {
-    mock = TaskStorageMock([]);
-    repo = TasksRepository(storage: mock);
-
-    expect(mock.isInit, false);
-
-    repo.init();
-
-    expect(mock.isInit, true);
-  });
-
   group('Basic methods', () {
+    test('Init', () async {
+      mock = TaskStorageMock([]);
+      repo = TasksRepository(storage: mock);
+
+      expect(mock.isInit, false);
+
+      repo.init();
+
+      expect(mock.isInit, true);
+    });
+
     test('Add task', () async {
       for (final task in tasks) {
         await repo.addTask(task);
@@ -119,6 +119,23 @@ void main() {
       expect(stateAfter.doneCount, 0);
     });
 
+    test('Init with initial tasks', () async {
+      mock = TaskStorageMock(tasks);
+      repo = TasksRepository(storage: mock);
+
+      await repo.init();
+
+      final stateAfter = repo.state;
+
+      expect(stateAfter.tasks, hasLength(tasks.length));
+      for (final task in tasks) {
+        expect(
+          mock.tasks,
+          anyElement(predicate<TaskData>((item) => item.isEqual(task))),
+        );
+      }
+    });
+
     test('Emit on add task', () async {
       final newTask = tasks[0];
       await repo.addTask(newTask);
@@ -178,6 +195,21 @@ void main() {
 
       expect(stateAfter.isInitialized, true);
       expect(stateAfter.hasInitError, false);
+    });
+
+    test('Done count', () async {
+      for (final task in tasks) {
+        await repo.addTask(task);
+      }
+
+      final nDoneCount =
+          tasks.fold(0, (prev, task) => prev + (task.isDone ? 1 : 0));
+
+      expect(repo.state.doneCount, nDoneCount);
+
+      await repo.addTask(TaskData(text: 'A', isDone: true));
+
+      expect(repo.state.doneCount, nDoneCount + 1);
     });
   });
 }
