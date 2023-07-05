@@ -7,7 +7,7 @@ import 'package:http/retry.dart';
 import 'package:tododo/model/task.dart';
 import 'package:tododo/utils/logger.dart';
 
-import 'storage.dart';
+import 'task_storage.dart';
 
 class NetException implements Exception {
   int statusCode;
@@ -34,18 +34,23 @@ class NetException implements Exception {
 
 typedef JsonObject = Map<String, dynamic>;
 
-final class NetStorage implements Storage {
+final class NetStorageImpl implements RevisionTaskStorage {
   static const baseUrl = 'https://beta.mrdekk.ru/todobackend';
   static const _token = '*some token*';
 
   static int? failsThreshold;
 
-  NetStorage();
+  NetStorageImpl();
 
   int _revision = -1;
 
   @override
   int get revision => _revision;
+
+  @override
+  set revision(int newRevision) {
+    _revision = newRevision;
+  }
 
   final _client = RetryClient(
     Client(),
@@ -75,8 +80,6 @@ final class NetStorage implements Storage {
     String path, [
     JsonObject? body,
   ]) async {
-    // return Future.delayed(const Duration(milliseconds: 2000), () => Future.error('bababa'));
-
     final request = Request(method, Uri.parse('$baseUrl/$path'));
 
     // Headers
@@ -100,6 +103,9 @@ final class NetStorage implements Storage {
   }
 
   @override
+  Future<void> init() async {}
+
+  @override
   Future<List<TaskData>> getTasks() async {
     final data = await _send('GET', 'list');
     final List<dynamic> list = data['list'];
@@ -114,14 +120,6 @@ final class NetStorage implements Storage {
     await _send('PATCH', 'list', {
       'list': tasks.map((item) => item.toJson()).toList(),
     });
-  }
-
-  @override
-  Future<TaskData> getTask(String id) async {
-    final data = await _send('GET', 'list/$id');
-    final element = data['element'];
-
-    return Future.value(TaskData.fromJson(element));
   }
 
   @override

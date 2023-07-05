@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:tododo/core/themes.dart';
-import 'package:tododo/core/widgets.dart';
+import 'package:tododo/presentation/themes.dart';
+import 'package:tododo/presentation/widgets.dart';
 
 import 'package:tododo/utils/s.dart';
 

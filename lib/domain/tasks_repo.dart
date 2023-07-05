@@ -1,51 +1,23 @@
 import 'dart:async';
+import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:tododo/model/task.dart';
 
-import 'package:tododo/storages/sync_storage.dart';
+import 'package:tododo/data/task_storage/task_storage.dart';
 
 import 'package:tododo/utils/utils.dart';
 import 'package:tododo/utils/logger.dart';
 
-class TasksState {
-  final List<TaskData> tasks;
-  final int doneCount;
-  final bool isInitialized;
-  final bool hasInitError;
-
-  TasksState({
-    required this.tasks,
-    required this.isInitialized,
-    required this.hasInitError,
-  }) : doneCount =
-            tasks.fold<int>(0, (count, task) => count + (task.isDone ? 1 : 0));
-
-  TasksState copyWith({
-    List<TaskData>? tasks,
-    bool? isInitialized,
-    bool? hasInitError,
-  }) =>
-      TasksState(
-        tasks: tasks ?? this.tasks,
-        isInitialized: isInitialized ?? this.isInitialized,
-        hasInitError: hasInitError ?? this.hasInitError,
-      );
-
-  List<int> get tasksIndexes => [for (int i = 0; i < tasks.length; i++) i];
-
-  List<int> get undoneTasksIndexes => [
-        for (int i = 0; i < tasks.length; i++)
-          if (!tasks[i].isDone) i
-      ];
-}
+import 'tasks_state.dart';
 
 class TasksRepository extends Cubit<TasksState> {
-  TasksRepository()
-      : super(
+  TasksRepository({required TaskStorage storage})
+      : _storage = storage,
+        super(
           TasksState(
             tasks: [],
             isInitialized: false,
@@ -53,19 +25,13 @@ class TasksRepository extends Cubit<TasksState> {
           ),
         );
 
+  final TaskStorage _storage;
+
   static TasksRepository of(BuildContext context) {
     return context.read<TasksRepository>();
   }
 
-  // StreamController<Future<void>> _eventController;
-
   final List<TaskData> _tasks = [];
-
-  final SyncStorage _storage = SyncStorage();
-
-  // void _addEvent(Future<void> event) {
-  //   _eventController.add(event);
-  // }
 
   void _updateTasks(List<TaskData> newTasks) {
     _tasks.clear();
@@ -95,19 +61,34 @@ class TasksRepository extends Cubit<TasksState> {
   }
 
   Future<void> addTask(TaskData task) async {
-    _tasks.add(task);
+    _tasks.add(task.copy());
 
     await _storage.addTask(task);
 
     emit(state.copyWith(tasks: _tasks));
   }
 
-  // TODO: replace task param
-  Future<void> changeTask(int index, TaskData task) async {
-    _tasks[index].text = task.text;
-    _tasks[index].importance = task.importance;
-    _tasks[index].date = task.date;
+  Future<void> updateTask(
+    int index, {
+    String? text,
+    TaskImportance? importance,
+    bool? nullDate,
+    DateTime? date,
+  }) async {
+    if (text != null) {
+      _tasks[index].text = text;
+    }
+    if (importance != null) {
+      _tasks[index].importance = importance;
+    }
+    if (nullDate != null && nullDate) {
+      _tasks[index].date = null;
+    } else if (date != null) {
+      _tasks[index].date = date;
+    }
+
     _tasks[index].changedAt = DateTime.now();
+    _tasks[index].updatedBy = Platform.isAndroid ? 'android' : 'not android';
 
     await _storage.updateTask(_tasks[index]);
 

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:tododo/core/tasks_repo.dart';
+import 'package:tododo/domain/tasks_repo.dart';
 
 import 'package:tododo/presentation/pages/main_page/main_page.dart';
 import 'package:tododo/presentation/pages/edit_page/edit_page.dart';

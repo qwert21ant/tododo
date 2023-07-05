@@ -98,4 +98,17 @@ class TaskData {
       updatedBy: updatedBy ?? this.updatedBy,
     );
   }
+
+  TaskData copy() => copyWith();
+
+  bool isEqual(TaskData other) =>
+      id == other.id &&
+      text == other.text &&
+      importance == other.importance &&
+      date == other.date &&
+      isDone == other.isDone &&
+      color == other.color &&
+      createdAt == other.createdAt &&
+      changedAt == other.changedAt &&
+      updatedBy == other.updatedBy;
 }

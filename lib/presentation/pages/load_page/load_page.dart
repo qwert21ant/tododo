@@ -4,9 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:get_it/get_it.dart';
 
-import 'package:tododo/core/tasks_repo.dart';
-import 'package:tododo/core/themes.dart';
-import 'package:tododo/core/widgets.dart';
+import 'package:tododo/domain/tasks_repo.dart';
+import 'package:tododo/domain/tasks_state.dart';
+
+import 'package:tododo/presentation/themes.dart';
+import 'package:tododo/presentation/widgets.dart';
 
 import 'package:tododo/presentation/navigation/navigation_manager.dart';
 import 'package:tododo/presentation/navigation/navigation_state.dart';

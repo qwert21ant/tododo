@@ -4,12 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:get_it/get_it.dart';
 
-import 'package:tododo/core/themes.dart';
-import 'package:tododo/core/widgets.dart';
-import 'package:tododo/core/tasks_repo.dart';
+import 'package:tododo/domain/tasks_repo.dart';
+
+import 'package:tododo/presentation/themes.dart';
+import 'package:tododo/presentation/widgets.dart';
+
+import 'package:tododo/presentation/navigation/navigation_manager.dart';
 
 import 'package:tododo/model/task.dart';
-import 'package:tododo/presentation/navigation/navigation_manager.dart';
 
 import 'package:tododo/utils/s.dart';
 
@@ -53,8 +55,13 @@ class EditPage extends StatelessWidget {
                     if (taskIndex == null) {
                       await TasksRepository.of(context).addTask(bloc.state);
                     } else {
-                      await TasksRepository.of(context)
-                          .changeTask(taskIndex!, bloc.state);
+                      await TasksRepository.of(context).updateTask(
+                        taskIndex!,
+                        text: bloc.state.text,
+                        importance: bloc.state.importance,
+                        nullDate: bloc.state.date == null,
+                        date: bloc.state.date,
+                      );
                     }
 
                     GetIt.I<NavMan>().openMainPage();
