@@ -1,10 +1,11 @@
+import 'package:flutter/material.dart';
+
 import 'package:tododo/presentation/navigation/navigation_state.dart';
+
 import 'package:tododo/utils/logger.dart';
 
-import 'router_delegate.dart';
-
 class NavMan {
-  final MyRouterDelegate _routerDelegate;
+  final RouterDelegate _routerDelegate;
 
   NavMan(this._routerDelegate);
 

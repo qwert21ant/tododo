@@ -78,10 +78,10 @@ class _ListItemState extends State<ListItem> {
       iconSpan = null;
     }
 
-    final title = Text.rich(
+    final title = RichText(
       maxLines: 3,
       overflow: TextOverflow.ellipsis,
-      TextSpan(
+      text: TextSpan(
         children: [
           if (iconSpan != null) iconSpan,
           TextSpan(
