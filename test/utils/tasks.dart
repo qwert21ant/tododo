@@ -1,15 +1,17 @@
 import 'package:tododo/model/task.dart';
 
-final taskToUpdate = TaskData(
+final taskA = TaskData(
   id: 'test_id',
   text: 'A',
   date: DateTime(1, 1, 1),
   updatedBy: 'test_app',
 );
 
-const newTaskText = 'B';
-const newTaskImportance = TaskImportance.low;
-final newTaskDate = DateTime(2, 2, 2);
+final taskB = taskA.copyWith(
+  text: 'B',
+  importance: TaskImportance.low,
+  date: DateTime(2, 2, 2),
+);
 
 final List<TaskData> tasks = [
   TaskData(text: 'A', isDone: true),

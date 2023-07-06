@@ -28,7 +28,7 @@ final class AppStorageImpl implements TaskStorage {
   int _nNetRequests = 0;
 
   Future<void> _incNRequests() async {
-    if (_nNetRequests != 0) {
+    if (_nNetRequests == 0) {
       await _storeOnlineStatus(false);
     }
     _nNetRequests++;

@@ -46,27 +46,27 @@ void main() {
     });
 
     test('Update task', () async {
-      await repo.addTask(taskToUpdate);
+      await repo.addTask(taskA);
 
       await Future.delayed(const Duration(milliseconds: 100));
 
       await repo.updateTask(
         0,
-        text: newTaskText,
-        importance: newTaskImportance,
-        date: newTaskDate,
+        text: taskB.text,
+        importance: taskB.importance,
+        date: taskB.date,
       );
 
       expect(mock.tasks, hasLength(1));
 
       final chTask = mock.tasks[0];
 
-      expect(chTask.id, taskToUpdate.id);
-      expect(chTask.text, newTaskText);
-      expect(chTask.importance, newTaskImportance);
-      expect(chTask.date, newTaskDate);
-      expect(chTask.changedAt, isNot(taskToUpdate.changedAt));
-      expect(chTask.updatedBy, isNot(taskToUpdate.updatedBy));
+      expect(chTask.id, taskA.id);
+      expect(chTask.text, taskB.text);
+      expect(chTask.importance, taskB.importance);
+      expect(chTask.date, taskB.date);
+      expect(chTask.changedAt, isNot(taskA.changedAt));
+      expect(chTask.updatedBy, isNot(taskA.updatedBy));
     });
 
     test('Remove task', () async {
@@ -104,7 +104,7 @@ void main() {
     });
 
     test('Emit on init with error', () async {
-      mock = TaskStorageMock([], throwOnInit: true);
+      mock = TaskStorageMock([], true);
       repo = TasksRepository(storage: mock);
 
       expect(repo.state.isInitialized, false);
@@ -150,13 +150,13 @@ void main() {
     });
 
     test('Emit on update task', () async {
-      await repo.addTask(taskToUpdate);
+      await repo.addTask(taskA);
 
       await repo.updateTask(
         0,
-        text: newTaskText,
-        importance: newTaskImportance,
-        date: newTaskDate,
+        text: taskB.text,
+        importance: taskB.importance,
+        date: taskB.date,
       );
 
       final stateAfter = repo.state;
@@ -165,12 +165,12 @@ void main() {
 
       final chTask = stateAfter.tasks[0];
 
-      expect(chTask.id, taskToUpdate.id);
-      expect(chTask.text, newTaskText);
-      expect(chTask.importance, newTaskImportance);
-      expect(chTask.date, newTaskDate);
-      expect(chTask.changedAt, isNot(taskToUpdate.changedAt));
-      expect(chTask.updatedBy, isNot(taskToUpdate.updatedBy));
+      expect(chTask.id, taskA.id);
+      expect(chTask.text, taskB.text);
+      expect(chTask.importance, taskB.importance);
+      expect(chTask.date, taskB.date);
+      expect(chTask.changedAt, isNot(taskA.changedAt));
+      expect(chTask.updatedBy, isNot(taskA.updatedBy));
 
       expect(stateAfter.isInitialized, true);
       expect(stateAfter.hasInitError, false);
