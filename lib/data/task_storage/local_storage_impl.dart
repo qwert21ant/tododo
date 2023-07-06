@@ -33,6 +33,7 @@ final class LocalStorageImpl implements RevisionTaskStorage {
     _db = await databaseFactoryIo.openDatabase('${appDir.path}/$dbName');
 
     await _store.record('config').delete(_db);
+    await _store.record('revision').delete(_db);
   }
 
   @override
