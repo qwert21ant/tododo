@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'themes.dart';
+import 'package:tododo/presentation/theme/app_theme.dart';
 
 class MyText extends StatelessWidget {
   final String text;
@@ -13,7 +13,10 @@ class MyText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: AppTheme.body.copyWith(fontSize: fontSize, color: color),
+      style: context.appTheme.textBody.copyWith(
+        fontSize: fontSize,
+        color: color ?? context.appTheme.labelPrimary,
+      ),
     );
   }
 }

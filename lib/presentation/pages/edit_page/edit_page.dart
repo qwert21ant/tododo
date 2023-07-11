@@ -6,7 +6,7 @@ import 'package:get_it/get_it.dart';
 
 import 'package:tododo/domain/tasks_repo.dart';
 
-import 'package:tododo/presentation/themes.dart';
+import 'package:tododo/presentation/theme/app_theme.dart';
 import 'package:tododo/presentation/widgets.dart';
 
 import 'package:tododo/presentation/navigation/navigation_manager.dart';
@@ -37,14 +37,17 @@ class EditPage extends StatelessWidget {
     return BlocProvider<EditPageBloc>(
       create: (BuildContext context) => bloc,
       child: Scaffold(
+        backgroundColor: context.appTheme.backPrimary,
         body: CustomScrollView(
           slivers: [
             SliverAppBar(
+              foregroundColor: Colors.white,
+              backgroundColor: context.appTheme.backPrimary,
               pinned: true,
               leading: MyIconButton(
                 icon: Icons.close,
-                iconColor: AppTheme.labelPrimary,
-                backgroundColor: AppTheme.backPrimary,
+                iconColor: context.appTheme.labelPrimary,
+                backgroundColor: context.appTheme.backPrimary,
                 onPressed: () {
                   GetIt.I<NavMan>().openMainPage();
                 },
@@ -66,7 +69,10 @@ class EditPage extends StatelessWidget {
 
                     GetIt.I<NavMan>().openMainPage();
                   },
-                  child: MyText(S.of(context)['save'], color: AppTheme.blue),
+                  child: MyText(
+                    S.of(context)['save'],
+                    color: context.appTheme.blue,
+                  ),
                 ),
                 const SizedBox(width: 16)
               ],
@@ -79,7 +85,7 @@ class EditPage extends StatelessWidget {
                   TextEdit(initialValue: bloc.state.text),
                   const SizedBox(height: 16),
                   const ImportanceTile(),
-                  const Divider(),
+                  Divider(color: context.appTheme.separatorSupport),
                   const DateTile(),
                 ],
               ),
@@ -87,7 +93,7 @@ class EditPage extends StatelessWidget {
             SliverToBoxAdapter(
               child: Column(
                 children: [
-                  const Divider(),
+                  Divider(color: context.appTheme.separatorSupport),
                   ListTile(
                     enabled: taskIndex != null,
                     horizontalTitleGap: 0,
@@ -97,15 +103,15 @@ class EditPage extends StatelessWidget {
                       child: Icon(
                         Icons.delete,
                         color: taskIndex == null
-                            ? AppTheme.labelDisable
-                            : AppTheme.red,
+                            ? context.appTheme.labelDisable
+                            : context.appTheme.red,
                       ),
                     ),
                     title: MyText(
                       S.of(context)['delete'],
                       color: taskIndex == null
-                          ? AppTheme.labelDisable
-                          : AppTheme.red,
+                          ? context.appTheme.labelDisable
+                          : context.appTheme.red,
                     ),
                     onTap: () async {
                       await TasksRepository.of(context).removeTask(taskIndex!);

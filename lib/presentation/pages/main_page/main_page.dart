@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:get_it/get_it.dart';
 
-import 'package:tododo/presentation/themes.dart';
+import 'package:tododo/presentation/theme/app_theme.dart';
 
 import 'package:tododo/presentation/navigation/navigation_manager.dart';
 
@@ -23,12 +23,13 @@ class MainPage extends StatelessWidget {
     return BlocProvider<TasksVisibilityBloc>(
       create: (context) => bloc,
       child: Scaffold(
+        backgroundColor: context.appTheme.backPrimary,
         floatingActionButton: FloatingActionButton(
-          backgroundColor: AppTheme.blue,
+          backgroundColor: context.appTheme.blue,
           onPressed: () {
             GetIt.I<NavMan>().openEditPage();
           },
-          child: const Icon(Icons.add),
+          child: Icon(Icons.add, color: context.appTheme.white),
         ),
         body: const SafeArea(
           child: CustomScrollView(

@@ -6,8 +6,9 @@ import 'package:get_it/get_it.dart';
 
 import 'package:tododo/domain/tasks_repo.dart';
 import 'package:tododo/presentation/pages/main_page/main_page.dart';
+import 'package:tododo/presentation/theme/app_theme.dart';
 
-import 'package:tododo/presentation/themes.dart';
+import 'package:tododo/presentation/theme/app_theme.dart';
 
 import 'package:tododo/utils/s.dart';
 
@@ -39,7 +40,12 @@ class App extends StatelessWidget {
         supportedLocales: S.supportedLocales,
         localizationsDelegates: S.localizationDelegates,
         title: 'ToDoDo',
-        theme: lightTheme,
+        theme: ThemeData(extensions: const [AppTheme.light]),
+        darkTheme: ThemeData(
+          brightness: Brightness.dark,
+          extensions: const [AppTheme.dark],
+        ),
+        // themeMode: ThemeMode.dark,
         scrollBehavior:
             const MaterialScrollBehavior().copyWith(scrollbars: false),
         routerDelegate: _routerDelegate,

@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tododo/domain/tasks_repo.dart';
 import 'package:tododo/domain/tasks_state.dart';
 
-import 'package:tododo/presentation/themes.dart';
+import 'package:tododo/presentation/theme/app_theme.dart';
 import 'package:tododo/presentation/widgets.dart';
 
 import 'package:tododo/utils/s.dart';
@@ -35,8 +35,8 @@ class MyAppBar extends StatelessWidget {
           builder: (context, state) {
             return MyIconButton(
               icon: state ? Icons.visibility_off : Icons.visibility,
-              iconColor: AppTheme.blue,
-              backgroundColor: AppTheme.backPrimary,
+              iconColor: context.appTheme.blue,
+              backgroundColor: context.appTheme.backPrimary,
               onPressed: () {
                 final bloc = context.read<TasksVisibilityBloc>();
 
@@ -102,7 +102,7 @@ class _MyDelegate extends SliverPersistentHeaderDelegate {
           duration: Duration(milliseconds: perc == 1.0 ? 300 : 50),
         ),
         Container(
-          color: AppTheme.backPrimary,
+          color: context.appTheme.backPrimary,
           child: Align(
             alignment: Alignment.bottomLeft,
             child: Row(
@@ -119,8 +119,11 @@ class _MyDelegate extends SliverPersistentHeaderDelegate {
                         padding: EdgeInsets.only(bottom: interp(30, 14)),
                         child: Text(
                           S.of(context)['myTasks'],
-                          style: AppTheme.titleLarge
-                              .copyWith(fontSize: interp(32, 20), height: 1.6),
+                          style: context.appTheme.textTitleLarge.copyWith(
+                            fontSize: interp(32, 20),
+                            height: 1.6,
+                            color: context.appTheme.labelPrimary,
+                          ),
                         ),
                       ),
                       Padding(
@@ -132,7 +135,7 @@ class _MyDelegate extends SliverPersistentHeaderDelegate {
                             builder: (context, value) => MyText(
                               '${S.of(context)['done']} — $value',
                               fontSize: interp(16, 10),
-                              color: AppTheme.labelTertiary,
+                              color: context.appTheme.labelTertiary,
                             ),
                           ),
                         ),
