@@ -39,6 +39,7 @@ class ConfigStorageImpl implements ConfigStorage {
     final wasOnline = await _store.record('wasOnline').get(_db) as bool?;
     if (wasOnline == null) {
       await _store.record('wasOnline').add(_db, false);
+      _config.wasOnline = true;
     } else {
       _config.wasOnline = wasOnline;
     }
