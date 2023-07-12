@@ -1,18 +1,23 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:get_it/get_it.dart';
 
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+
+import 'package:tododo/firebase_options.dart';
+
 import 'package:tododo/domain/tasks_repo.dart';
-import 'package:tododo/presentation/pages/main_page/main_page.dart';
-import 'package:tododo/presentation/theme/app_theme.dart';
 
 import 'package:tododo/presentation/theme/app_theme.dart';
+import 'package:tododo/utils/logger.dart';
 
 import 'package:tododo/utils/s.dart';
 
-import 'navigation/router_delegate.dart';
 import 'navigation/route_information_parser.dart';
 import 'navigation/navigation_manager.dart';
 
@@ -31,10 +36,35 @@ class App extends StatelessWidget {
     GetIt.I.registerSingleton<NavMan>(NavMan(_routerDelegate));
   }
 
+  Future<void> _init() async {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+
+    FlutterError.onError = (details) {
+      Logger.error('${details.exception}', 'error');
+
+      FirebaseCrashlytics.instance.recordFlutterError(details);
+    };
+
+    PlatformDispatcher.instance.onError = (error, stack) {
+      Logger.error('$error', 'error');
+
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+
+      return true;
+    };
+
+    await _taskRepo.init();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<TasksRepository>(
-      create: (context) => _taskRepo..init(),
+      create: (context) {
+        _init();
+        return _taskRepo;
+      },
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
         supportedLocales: S.supportedLocales,

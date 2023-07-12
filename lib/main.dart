@@ -11,6 +11,8 @@ import 'presentation/navigation/router_delegate.dart';
 import 'presentation/app.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(
     App(
       taskRepo: TasksRepository(
