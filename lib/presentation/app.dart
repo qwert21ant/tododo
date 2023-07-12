@@ -75,7 +75,6 @@ class App extends StatelessWidget {
           brightness: Brightness.dark,
           extensions: const [AppTheme.dark],
         ),
-        // themeMode: ThemeMode.dark,
         scrollBehavior:
             const MaterialScrollBehavior().copyWith(scrollbars: false),
         routerDelegate: _routerDelegate,
