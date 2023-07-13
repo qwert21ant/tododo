@@ -8,6 +8,7 @@ import 'package:get_it/get_it.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:tododo/data/remote_configs.dart';
 
 import 'package:tododo/firebase_options.dart';
 
@@ -34,6 +35,7 @@ class App extends StatelessWidget {
   })  : _taskRepo = taskRepo,
         _routerDelegate = routerDelegate {
     GetIt.I.registerSingleton<NavMan>(NavMan(_routerDelegate));
+    GetIt.I.registerSingleton<RemoteConfigs>(RemoteConfigs());
   }
 
   Future<void> _init() async {
@@ -54,6 +56,8 @@ class App extends StatelessWidget {
 
       return true;
     };
+
+    await GetIt.I<RemoteConfigs>().init();
 
     await _taskRepo.init();
   }

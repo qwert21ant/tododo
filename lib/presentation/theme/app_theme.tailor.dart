@@ -21,6 +21,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
     required this.labelPrimary,
     required this.labelSecondary,
     required this.labelTertiary,
+    required this.optionalImportance,
     required this.overlaySupport,
     required this.red,
     required this.separatorSupport,
@@ -40,6 +41,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
   final Color labelPrimary;
   final Color labelSecondary;
   final Color labelTertiary;
+  final Color optionalImportance;
   final Color overlaySupport;
   final Color red;
   final Color separatorSupport;
@@ -59,6 +61,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
     labelPrimary: Color(0xFF000000),
     labelSecondary: Color(0x99000000),
     labelTertiary: Color(0x4D000000),
+    optionalImportance: Color(0xFF793cd8),
     overlaySupport: Color(0x0F000000),
     red: Color(0xFFFF3B30),
     separatorSupport: Color(0x33000000),
@@ -89,6 +92,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
     labelPrimary: Color(0xFFFFFFFF),
     labelSecondary: Color(0x99FFFFFF),
     labelTertiary: Color(0x66FFFFFF),
+    optionalImportance: Color(0xFF793cd8),
     overlaySupport: Color(0x52000000),
     red: Color(0xFFFF453A),
     separatorSupport: Color(0x33FFFFFF),
@@ -125,6 +129,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
     Color? labelPrimary,
     Color? labelSecondary,
     Color? labelTertiary,
+    Color? optionalImportance,
     Color? overlaySupport,
     Color? red,
     Color? separatorSupport,
@@ -144,6 +149,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
       labelPrimary: labelPrimary ?? this.labelPrimary,
       labelSecondary: labelSecondary ?? this.labelSecondary,
       labelTertiary: labelTertiary ?? this.labelTertiary,
+      optionalImportance: optionalImportance ?? this.optionalImportance,
       overlaySupport: overlaySupport ?? this.overlaySupport,
       red: red ?? this.red,
       separatorSupport: separatorSupport ?? this.separatorSupport,
@@ -168,6 +174,8 @@ class AppTheme extends ThemeExtension<AppTheme> {
       labelPrimary: Color.lerp(labelPrimary, other.labelPrimary, t)!,
       labelSecondary: Color.lerp(labelSecondary, other.labelSecondary, t)!,
       labelTertiary: Color.lerp(labelTertiary, other.labelTertiary, t)!,
+      optionalImportance:
+          Color.lerp(optionalImportance, other.optionalImportance, t)!,
       overlaySupport: Color.lerp(overlaySupport, other.overlaySupport, t)!,
       red: Color.lerp(red, other.red, t)!,
       separatorSupport:
@@ -202,6 +210,8 @@ class AppTheme extends ThemeExtension<AppTheme> {
             const DeepCollectionEquality()
                 .equals(labelTertiary, other.labelTertiary) &&
             const DeepCollectionEquality()
+                .equals(optionalImportance, other.optionalImportance) &&
+            const DeepCollectionEquality()
                 .equals(overlaySupport, other.overlaySupport) &&
             const DeepCollectionEquality().equals(red, other.red) &&
             const DeepCollectionEquality()
@@ -227,6 +237,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
       const DeepCollectionEquality().hash(labelPrimary),
       const DeepCollectionEquality().hash(labelSecondary),
       const DeepCollectionEquality().hash(labelTertiary),
+      const DeepCollectionEquality().hash(optionalImportance),
       const DeepCollectionEquality().hash(overlaySupport),
       const DeepCollectionEquality().hash(red),
       const DeepCollectionEquality().hash(separatorSupport),
@@ -250,6 +261,7 @@ extension AppThemeBuildContextProps on BuildContext {
   Color get labelPrimary => appTheme.labelPrimary;
   Color get labelSecondary => appTheme.labelSecondary;
   Color get labelTertiary => appTheme.labelTertiary;
+  Color get optionalImportance => appTheme.optionalImportance;
   Color get overlaySupport => appTheme.overlaySupport;
   Color get red => appTheme.red;
   Color get separatorSupport => appTheme.separatorSupport;

@@ -81,6 +81,11 @@ class _$AppTheme {
     Color(0xFF3C3C3F),
   ];
 
+  static const List<Color> optionalImportance = [
+    Color(0xFF793cd8),
+    Color(0xFF793cd8),
+  ];
+
   static const List<TextStyle> textTitleLarge = [
     TextStyle(
       fontFamily: 'Roboto',

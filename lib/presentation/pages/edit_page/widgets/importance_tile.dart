@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:get_it/get_it.dart';
+
+import 'package:tododo/data/remote_configs.dart';
+
 import 'package:tododo/presentation/theme/app_theme.dart';
 import 'package:tododo/presentation/widgets.dart';
 
@@ -23,7 +27,10 @@ class ImportanceTile extends StatelessWidget {
       MyText(S.of(context)['low'], color: color, fontSize: fontSize),
       MyText(
         '!! ${S.of(context)['high']}',
-        color: color ?? context.appTheme.red,
+        color: color ??
+            (GetIt.I<RemoteConfigs>().importanceFigmaColor
+                ? context.appTheme.red
+                : context.appTheme.optionalImportance),
         fontSize: fontSize,
       ),
     ];

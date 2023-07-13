@@ -6,6 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:get_it/get_it.dart';
 
+import 'package:tododo/data/remote_configs.dart';
+
 import 'package:tododo/domain/tasks_repo.dart';
 
 import 'package:tododo/presentation/theme/app_theme.dart';
@@ -69,7 +71,9 @@ class _ListItemState extends State<ListItem> {
       iconSpan = TextSpan(
         text: ' !! ',
         style: context.appTheme.textBody.copyWith(
-          color: context.appTheme.red,
+          color: GetIt.I<RemoteConfigs>().importanceFigmaColor
+              ? context.appTheme.red
+              : context.appTheme.optionalImportance,
           fontSize: 20,
           height: 1,
           fontWeight: FontWeight.w700,
@@ -160,7 +164,9 @@ class _ListItemState extends State<ListItem> {
             }
 
             return task.importance == TaskImportance.high
-                ? context.appTheme.red
+                ? (GetIt.I<RemoteConfigs>().importanceFigmaColor
+                    ? context.appTheme.red
+                    : context.appTheme.optionalImportance)
                 : context.appTheme.labelTertiary;
           }),
           value: task.isDone,
