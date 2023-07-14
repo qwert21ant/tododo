@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_flavor/flutter_flavor.dart';
 
 import 'package:get_it/get_it.dart';
 
@@ -69,20 +70,22 @@ class App extends StatelessWidget {
         _init();
         return _taskRepo;
       },
-      child: MaterialApp.router(
-        debugShowCheckedModeBanner: false,
-        supportedLocales: S.supportedLocales,
-        localizationsDelegates: S.localizationDelegates,
-        title: 'ToDoDo',
-        theme: ThemeData(extensions: const [AppTheme.light]),
-        darkTheme: ThemeData(
-          brightness: Brightness.dark,
-          extensions: const [AppTheme.dark],
+      child: FlavorBanner(
+        child: MaterialApp.router(
+          debugShowCheckedModeBanner: false,
+          supportedLocales: S.supportedLocales,
+          localizationsDelegates: S.localizationDelegates,
+          title: 'ToDoDo',
+          theme: ThemeData(extensions: const [AppTheme.light]),
+          darkTheme: ThemeData(
+            brightness: Brightness.dark,
+            extensions: const [AppTheme.dark],
+          ),
+          scrollBehavior:
+              const MaterialScrollBehavior().copyWith(scrollbars: false),
+          routerDelegate: _routerDelegate,
+          routeInformationParser: _routeInformationParser,
         ),
-        scrollBehavior:
-            const MaterialScrollBehavior().copyWith(scrollbars: false),
-        routerDelegate: _routerDelegate,
-        routeInformationParser: _routeInformationParser,
       ),
     );
   }
