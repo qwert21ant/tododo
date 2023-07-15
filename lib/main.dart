@@ -1,38 +1,26 @@
 import 'package:flutter/material.dart';
 
-import 'core/navigation.dart';
-import 'core/task_man.dart';
-import 'core/themes.dart';
+import 'data/app_storage/app_storage_impl.dart';
+import 'data/config_storage/config_storage_impl.dart';
+import 'data/task_storage/local_storage_impl.dart';
+import 'data/task_storage/network_storage_impl.dart';
 
-import 'utils/logger.dart';
-import 'utils/s.dart';
+import 'domain/tasks_repo.dart';
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+import 'presentation/navigation/router_delegate.dart';
+import 'presentation/app.dart';
 
-  await TaskMan.init(); // TODO: init and load after runApp
-  await TaskMan.load();
-
-  runApp(const App());
-}
-
-class App extends StatelessWidget {
-  const App({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      supportedLocales: S.supportedLocales,
-      localizationsDelegates: S.localizationDelegates,
-      title: 'ToDoDo',
-      theme: lightTheme,
-      scrollBehavior:
-          const MaterialScrollBehavior().copyWith(scrollbars: false),
-      navigatorKey: NavMan.key,
-      routes: Routes.routes,
-      initialRoute: Routes.home,
-      navigatorObservers: [NavigatorLogger()],
-    );
-  }
+void main() {
+  runApp(
+    App(
+      taskRepo: TasksRepository(
+        storage: AppStorageImpl(
+          localStorage: LocalStorageImpl(),
+          netStorage: NetStorageImpl(),
+          cfgStorage: ConfigStorageImpl(),
+        ),
+      ),
+      routerDelegate: MyRouterDelegate(),
+    ),
+  );
 }

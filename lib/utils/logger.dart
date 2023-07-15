@@ -1,23 +1,16 @@
 import 'dart:developer' as dev;
 
-import 'package:flutter/widgets.dart';
+enum Level { info, warning, error }
 
 abstract class Logger {
-  static void log(String text) => dev.log(text, name: 'my.log');
-  static void net(String text) => dev.log(text, name: 'my.net');
-  static void nav(String text) => dev.log(text, name: 'my.nav');
-  static void state(String text) => dev.log(text, name: 'my.state');
-  static void storage(String text) => dev.log(text, name: 'my.storage');
-}
+  static void _log(String text, String group, [Level level = Level.info]) =>
+      dev.log('${['⚪', '🟡', '🔴'][level.index]} $text', name: 'my.$group');
 
-class NavigatorLogger extends NavigatorObserver {
-  @override
-  void didPop(Route route, Route? previousRoute) {
-    Logger.nav('pop route: ${route.settings.name}');
-  }
+  static void info(String text, String group) => _log(text, group);
 
-  @override
-  void didPush(Route route, Route? previousRoute) {
-    Logger.nav('push route: ${route.settings.name}');
-  }
+  static void warn(String text, String group) =>
+      _log(text, group, Level.warning);
+
+  static void error(String text, String group) =>
+      _log(text, group, Level.error);
 }

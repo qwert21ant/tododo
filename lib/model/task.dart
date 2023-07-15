@@ -28,10 +28,13 @@ class TaskData {
     this.isDone = false,
     this.color,
     DateTime? createdAt,
+    DateTime? changedAt,
+    String? updatedBy,
   })  : id = id ?? _uuid.v4(),
         createdAt = createdAt ?? DateTime.now(),
-        changedAt = createdAt ?? DateTime.now(),
-        updatedBy = Platform.isAndroid ? 'android' : 'not android';
+        changedAt = changedAt ?? DateTime.now(),
+        updatedBy =
+            updatedBy ?? (Platform.isAndroid ? 'android' : 'not android');
 
   TaskData.fromJson(Map<String, dynamic> json)
       : id = json['id'],
@@ -69,4 +72,43 @@ class TaskData {
   String toString() {
     return '${text.length > 30 ? text.substring(0, 30) : text} [${isDone ? 'done' : 'not done'}]';
   }
+
+  TaskData copyWith({
+    String? id,
+    String? text,
+    TaskImportance? importance,
+    bool? nullDate, // because date has type DateTime?
+    DateTime? date,
+    bool? isDone,
+    bool? nullColor, // because color has type Color?
+    Color? color,
+    DateTime? createdAt,
+    DateTime? changedAt,
+    String? updatedBy,
+  }) {
+    return TaskData(
+      id: id ?? this.id,
+      text: text ?? this.text,
+      importance: importance ?? this.importance,
+      date: (nullDate ?? false) ? null : (date ?? this.date),
+      isDone: isDone ?? this.isDone,
+      color: (nullColor ?? false) ? null : (color ?? this.color),
+      createdAt: createdAt ?? this.createdAt,
+      changedAt: changedAt ?? this.changedAt,
+      updatedBy: updatedBy ?? this.updatedBy,
+    );
+  }
+
+  TaskData copy() => copyWith();
+
+  bool isEqual(TaskData other) =>
+      id == other.id &&
+      text == other.text &&
+      importance == other.importance &&
+      date == other.date &&
+      isDone == other.isDone &&
+      color == other.color &&
+      createdAt == other.createdAt &&
+      changedAt == other.changedAt &&
+      updatedBy == other.updatedBy;
 }

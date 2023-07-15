@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import 'logger.dart';
+
 class S {
   static const supportedLocales = [Locale('ru'), Locale('en')];
   static final localizationDelegates = [
@@ -26,7 +28,12 @@ class S {
       : _locale = locale,
         _data = data;
 
-  String operator [](String key) => _data[key] ?? '---';
+  String operator [](String key) {
+    if (_data[key] == null) {
+      Logger.warn('String $key not found', 's');
+    }
+    return _data[key] ?? 'no string';
+  }
 }
 
 class MyLocalizationDelegate extends LocalizationsDelegate<S> {
