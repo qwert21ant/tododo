@@ -17,7 +17,7 @@ abstract class Routes {
 abstract class NavMan {
   static final key = GlobalKey<NavigatorState>();
 
-  static get _nav => key.currentState!;
+  static NavigatorState get _nav => key.currentState!;
 
   static Future<dynamic> openEditPage([int? taskIndex]) =>
       _nav.pushNamed(Routes.edit, arguments: taskIndex);

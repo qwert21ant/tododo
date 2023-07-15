@@ -1,13 +1,12 @@
-import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
 import 'package:tododo/core/themes.dart';
 import 'package:tododo/core/widgets.dart';
-import 'package:tododo/core/taskman.dart';
+import 'package:tododo/core/task_man.dart';
 
-import 'package:tododo/utils/logger.dart';
+import 'package:tododo/utils/s.dart';
 
 class MyAppBar extends StatefulWidget {
   final double collapsedHeight;
@@ -27,23 +26,12 @@ class MyAppBar extends StatefulWidget {
 
 class _MyAppBarState extends State<MyAppBar> {
   late bool visibility;
-  late int doneCount;
-
-  void _onDoneCountChange(int newValue) {
-    Logger.state('update doneCount');
-
-    setState(() {
-      doneCount = newValue;
-    });
-  }
 
   @override
   void initState() {
     super.initState();
 
     visibility = false;
-    doneCount = TaskMan.doneCount.value;
-    TaskMan.doneCount.listener = _onDoneCountChange;
   }
 
   @override
@@ -53,7 +41,6 @@ class _MyAppBarState extends State<MyAppBar> {
       delegate: _MyDelegate(
         collapsedHeight: widget.collapsedHeight,
         expandedHeight: widget.expandedHeight,
-        nDoneTasks: doneCount,
         iconButton: MyIconButton(
           icon: visibility ? Icons.visibility_off : Icons.visibility,
           iconColor: AppTheme.blue,
@@ -73,14 +60,12 @@ class _MyAppBarState extends State<MyAppBar> {
 class _MyDelegate extends SliverPersistentHeaderDelegate {
   final double collapsedHeight;
   final double expandedHeight;
-  final int nDoneTasks;
 
   final Widget iconButton;
 
   _MyDelegate({
     required this.collapsedHeight,
     required this.expandedHeight,
-    required this.nDoneTasks,
     required this.iconButton,
   });
 
@@ -90,14 +75,12 @@ class _MyDelegate extends SliverPersistentHeaderDelegate {
     double shrinkOffset,
     bool overlapsContent,
   ) {
-    double trimDouble(double x) => min(max(x, 0.0), 1.0);
-
     // 0 - expanded
     // 1 - collapsed
     final double perc =
-        trimDouble(shrinkOffset / (expandedHeight - collapsedHeight));
+        (shrinkOffset / (expandedHeight - collapsedHeight)).clamp(0.0, 1.0);
 
-    double interp(a, b) => lerpDouble(a, b, perc)!;
+    double interp(double a, double b) => lerpDouble(a, b, perc)!;
 
     return Stack(
       children: [
@@ -142,7 +125,7 @@ class _MyDelegate extends SliverPersistentHeaderDelegate {
                       Padding(
                         padding: EdgeInsets.only(bottom: interp(30, 14)),
                         child: Text(
-                          'Мои дела',
+                          S.of(context)['myTasks'],
                           style: AppTheme.titleLarge
                               .copyWith(fontSize: interp(32, 20), height: 1.6),
                         ),
@@ -150,11 +133,14 @@ class _MyDelegate extends SliverPersistentHeaderDelegate {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 10),
                         child: Opacity(
-                          opacity: trimDouble(1.0 - perc * 2),
-                          child: MyText(
-                            'Выполнено — ${nDoneTasks.toString()}',
-                            fontSize: interp(16, 10),
-                            color: AppTheme.labelTertiary,
+                          opacity: (1.0 - perc * 2).clamp(0.0, 1.0),
+                          child: ValueListenableBuilder<int>(
+                            valueListenable: TaskMan.doneCount,
+                            builder: (context, value, _) => MyText(
+                              '${S.of(context)['done']} — $value',
+                              fontSize: interp(16, 10),
+                              color: AppTheme.labelTertiary,
+                            ),
                           ),
                         ),
                       )

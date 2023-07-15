@@ -3,11 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:tododo/core/navigation.dart';
 import 'package:tododo/core/themes.dart';
 import 'package:tododo/core/widgets.dart';
-import 'package:tododo/core/taskman.dart';
+import 'package:tododo/core/task_man.dart';
 
-import 'textedit.dart';
-import 'importancetile.dart';
-import 'datetile.dart';
+import 'package:tododo/model/task.dart';
+
+import 'package:tododo/utils/s.dart';
+
+import 'widgets/text_edit.dart';
+import 'widgets/importance_tile.dart';
+import 'widgets/date_tile.dart';
 
 class EditPage extends StatefulWidget {
   final int? taskIndex;
@@ -39,7 +43,7 @@ class _EditPageState extends State<EditPage> {
 
     task = widget.taskIndex != null
         ? TaskMan.tasks[widget.taskIndex!]
-        : TaskData('');
+        : TaskData(text: '');
   }
 
   int _getImportanceIndex() {
@@ -76,7 +80,7 @@ class _EditPageState extends State<EditPage> {
                   }
                   _goBack();
                 },
-                child: const MyText('СОХРАНИТЬ', color: AppTheme.blue),
+                child: MyText(S.of(context)['save'], color: AppTheme.blue),
               ),
               const SizedBox(width: 16)
             ],
@@ -125,7 +129,7 @@ class _EditPageState extends State<EditPage> {
                     ),
                   ),
                   title: MyText(
-                    'Удалить',
+                    S.of(context)['delete'],
                     color: widget.taskIndex == null
                         ? AppTheme.labelDisable
                         : AppTheme.red,

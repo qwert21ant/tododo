@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'core/navigation.dart';
+import 'core/task_man.dart';
 import 'core/themes.dart';
-import 'core/taskman.dart';
 
 import 'utils/logger.dart';
+import 'utils/s.dart';
 
-void main() {
-  TaskMan.demo();
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await TaskMan.init(); // TODO: init and load after runApp
+  await TaskMan.load();
 
   runApp(const App());
 }
@@ -20,12 +23,8 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      supportedLocales: const [Locale('en'), Locale('ru')],
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate
-      ],
+      supportedLocales: S.supportedLocales,
+      localizationsDelegates: S.localizationDelegates,
       title: 'ToDoDo',
       theme: lightTheme,
       scrollBehavior:

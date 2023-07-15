@@ -1,17 +1,16 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 import 'package:tododo/core/navigation.dart';
-import 'package:tododo/core/taskman.dart';
+import 'package:tododo/core/task_man.dart';
 import 'package:tododo/core/themes.dart';
 import 'package:tododo/core/widgets.dart';
 
 import 'package:tododo/utils/logger.dart';
-import 'appbar.dart';
-import 'listitem.dart';
-import 'sliver_container.dart';
+import 'package:tododo/utils/s.dart';
+
+import 'widgets/app_bar.dart';
+import 'widgets/list_item.dart';
+import 'widgets/sliver_container.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -24,20 +23,21 @@ class _MainPageState extends State<MainPage> {
   late bool visibility;
 
   @override
-  initState() {
+  void initState() {
     super.initState();
 
     visibility = false;
   }
 
-  void _openEditPage([int? taskIndex]) {
-    NavMan.openEditPage(taskIndex).then((_) => _onChange());
+  Future<void> _openEditPage([int? taskIndex]) async {
+    await NavMan.openEditPage(taskIndex);
+    _onChange();
   }
 
   void _onChange() => setState(() {});
 
   void _onChangeVisibility(bool newVisibility) {
-    Logger.state('change visibility: ${newVisibility ? 'on' : 'off'}');
+    Logger.state('Change visibility: ${newVisibility ? 'on' : 'off'}');
 
     setState(() {
       visibility = newVisibility;
@@ -48,23 +48,17 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     final List<Widget> list;
 
-    final List<dynamic> tasks = [];
-    if (visibility) {
-      for (int i = 0; i < TaskMan.tasks.length; i++) {
-        tasks.add([i, TaskMan.tasks[i]]);
-      }
-    } else {
-      for (int i = 0; i < TaskMan.tasks.length; i++) {
-        if (TaskMan.tasks[i].isDone) continue;
-        tasks.add([i, TaskMan.tasks[i]]);
-      }
-    }
+    final List<int> tasks = TaskMan.tasks
+        .asMap()
+        .entries
+        .where((e) => visibility || !e.value.isDone)
+        .map((e) => e.key)
+        .toList();
 
     if (tasks.isNotEmpty) {
       list = [
         ListItem(
-          TaskMan.uniqueValue++,
-          tasks[0][0],
+          tasks[0],
           clipTop: true,
           onChange: _onChange,
           openEditPage: _openEditPage,
@@ -72,8 +66,7 @@ class _MainPageState extends State<MainPage> {
         ),
         for (int i = 1; i < tasks.length; i++)
           ListItem(
-            TaskMan.uniqueValue++,
-            tasks[i][0],
+            tasks[i],
             onChange: _onChange,
             openEditPage: _openEditPage,
             visibility: visibility,
@@ -84,8 +77,7 @@ class _MainPageState extends State<MainPage> {
             bottomRight: Radius.circular(8),
           ),
           child: MyListTile(
-            //color: AppTheme.backSecondary,
-            title: const MyText('Новое', color: AppTheme.labelTertiary),
+            title: MyText(S.of(context)['new'], color: AppTheme.labelTertiary),
             onTap: _openEditPage,
           ),
         )
@@ -95,8 +87,7 @@ class _MainPageState extends State<MainPage> {
         ClipRRect(
           borderRadius: const BorderRadius.all(Radius.circular(8)),
           child: MyListTile(
-            //color: AppTheme.backSecondary,
-            title: const MyText('Новое', color: AppTheme.labelTertiary),
+            title: MyText(S.of(context)['new'], color: AppTheme.labelTertiary),
             onTap: _openEditPage,
           ),
         )
