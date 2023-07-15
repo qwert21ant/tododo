@@ -1,3 +1,6 @@
+// Игнор, потому что этот класс используется только для кодгена
+// ignore_for_file: unused_element, unused_field
+
 import 'package:flutter/material.dart';
 
 import 'package:theme_tailor_annotation/theme_tailor_annotation.dart';

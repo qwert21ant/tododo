@@ -20,10 +20,6 @@ class RemoteConfigs {
     await FirebaseRemoteConfig.instance.fetchAndActivate();
   }
 
-  bool get importanceFigmaColor {
-    bool x = FirebaseRemoteConfig.instance.getBool(importanceFigmaColorField);
-    print('value: $x');
-
-    return x;
-  }
+  bool get importanceFigmaColor =>
+      FirebaseRemoteConfig.instance.getBool(importanceFigmaColorField);
 }
