@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:get_it/get_it.dart';
 
 import 'package:tododo/model/task.dart';
+
+import 'package:tododo/services/firebase_services.dart';
 
 import 'package:tododo/data/task_storage/task_storage.dart';
 
@@ -69,13 +71,10 @@ class TasksRepository extends Cubit<TasksState> {
 
     await _storage.addTask(task);
 
-    FirebaseAnalytics.instance.logEvent(
-      name: 'add_task',
-      parameters: {
-        'importance': importanceToString(task.importance),
-        'has_date': task.date != null ? 1 : 0,
-      },
-    );
+    GetIt.I<FirebaseServices>().logEvent('add_task', {
+      'importance': importanceToString(task.importance),
+      'has_date': task.date != null ? 1 : 0,
+    });
 
     emit(state.copyWith(tasks: _tasks));
   }
@@ -108,14 +107,11 @@ class TasksRepository extends Cubit<TasksState> {
 
     await _storage.updateTask(_tasks[index]);
 
-    FirebaseAnalytics.instance.logEvent(
-      name: 'update_task',
-      parameters: {
-        'update_text': updateText ? 1 : 0,
-        'update_importance': updateImportance ? 1 : 0,
-        'update_date': updateDate ? 1 : 0,
-      },
-    );
+    GetIt.I<FirebaseServices>().logEvent('update_task', {
+      'update_text': updateText ? 1 : 0,
+      'update_importance': updateImportance ? 1 : 0,
+      'update_date': updateDate ? 1 : 0,
+    });
 
     emit(state.copyWith(tasks: _tasks));
   }
@@ -127,13 +123,9 @@ class TasksRepository extends Cubit<TasksState> {
     await _storage.updateTask(_tasks[index]);
 
     if (_tasks[index].isDone) {
-      FirebaseAnalytics.instance.logEvent(
-        name: 'make_done',
-      );
+      GetIt.I<FirebaseServices>().logEvent('make_done');
     } else {
-      FirebaseAnalytics.instance.logEvent(
-        name: 'make_undone',
-      );
+      GetIt.I<FirebaseServices>().logEvent('make_undone');
     }
 
     emit(state.copyWith(tasks: _tasks));
@@ -144,9 +136,7 @@ class TasksRepository extends Cubit<TasksState> {
 
     _tasks.removeAt(index);
 
-    FirebaseAnalytics.instance.logEvent(
-      name: 'remove_task',
-    );
+    GetIt.I<FirebaseServices>().logEvent('remove_task');
 
     emit(state.copyWith(tasks: _tasks));
   }

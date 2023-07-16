@@ -9,6 +9,7 @@ void myRunApp(TasksRepository repo, RouterDelegate<Object> routerDelegate) {
     App(
       taskRepo: repo,
       routerDelegate: routerDelegate,
+      enableFirebaseServices: false,
     ),
   );
 }

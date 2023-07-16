@@ -1,3 +1,6 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter_flavor/flutter_flavor.dart';
@@ -17,7 +20,8 @@ import 'utils/logger.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
-  if (const bool.fromEnvironment('DEV')) {
+  String flavor = const String.fromEnvironment('FLAVOR');
+  if (flavor == 'DEV') {
     Logger.info('DEV flavor', 'info');
     FlavorConfig(
       name: 'DEV',
@@ -36,6 +40,7 @@ void main() {
         ),
       ),
       routerDelegate: MyRouterDelegate(),
+      enableFirebaseServices: true,
     ),
   );
 }

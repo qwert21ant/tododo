@@ -1,7 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:get_it/get_it.dart';
+
 import 'package:tododo/domain/tasks_repo.dart';
 import 'package:tododo/model/task.dart';
+
+import 'package:tododo/services/firebase_services.dart';
 
 import 'mocks/task_storage_mock.dart';
 
@@ -11,6 +15,8 @@ import 'utils/utils.dart';
 void main() {
   late TaskStorageMock mock;
   late TasksRepository repo;
+
+  GetIt.I.registerSingleton(FirebaseServices(false));
 
   setUp(() async {
     mock = TaskStorageMock([]);

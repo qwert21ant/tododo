@@ -6,14 +6,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:get_it/get_it.dart';
 
-import 'package:tododo/data/remote_configs.dart';
-
 import 'package:tododo/domain/tasks_repo.dart';
 
 import 'package:tododo/presentation/theme/app_theme.dart';
 import 'package:tododo/presentation/widgets.dart';
 
 import 'package:tododo/model/task.dart';
+
+import 'package:tododo/services/firebase_services.dart';
 
 import 'package:tododo/presentation/navigation/navigation_manager.dart';
 
@@ -71,7 +71,7 @@ class _ListItemState extends State<ListItem> {
       iconSpan = TextSpan(
         text: ' !! ',
         style: context.appTheme.textBody.copyWith(
-          color: GetIt.I<RemoteConfigs>().importanceFigmaColor
+          color: GetIt.I<FirebaseServices>().configs.importanceFigmaColor
               ? context.appTheme.red
               : context.appTheme.optionalImportance,
           fontSize: 20,
@@ -164,7 +164,7 @@ class _ListItemState extends State<ListItem> {
             }
 
             return task.importance == TaskImportance.high
-                ? (GetIt.I<RemoteConfigs>().importanceFigmaColor
+                ? (GetIt.I<FirebaseServices>().configs.importanceFigmaColor
                     ? context.appTheme.red
                     : context.appTheme.optionalImportance)
                 : context.appTheme.labelTertiary;
