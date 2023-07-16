@@ -22,10 +22,13 @@ class App extends StatelessWidget {
   final RouterDelegate<Object> _routerDelegate;
   final _routeInformationParser = MyRouteInformationParser();
 
+  Locale? locale;
+
   App({
     required TasksRepository taskRepo,
     required RouterDelegate<Object> routerDelegate,
     bool enableFirebaseServices = true,
+    this.locale,
     super.key,
   })  : _taskRepo = taskRepo,
         _routerDelegate = routerDelegate {
@@ -51,7 +54,7 @@ class App extends StatelessWidget {
       child: FlavorBanner(
         child: MaterialApp.router(
           debugShowCheckedModeBanner: false,
-          supportedLocales: S.supportedLocales,
+          supportedLocales: locale == null ? S.supportedLocales : [locale!],
           localizationsDelegates: S.localizationDelegates,
           title: 'ToDoDo',
           theme: ThemeData(extensions: const [AppTheme.light]),

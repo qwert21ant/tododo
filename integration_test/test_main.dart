@@ -10,6 +10,7 @@ void myRunApp(TasksRepository repo, RouterDelegate<Object> routerDelegate) {
       taskRepo: repo,
       routerDelegate: routerDelegate,
       enableFirebaseServices: false,
+      locale: const Locale('ru'),
     ),
   );
 }
