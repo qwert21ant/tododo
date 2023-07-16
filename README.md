@@ -42,3 +42,4 @@
   - Ada Lovelace: [1.0.0](https://disk.yandex.ru/d/mtSCbFwtXO3z1A)
   - Alan Turing: [1.1.0](https://disk.yandex.ru/d/I2ZUEwjaUkd-xQ)
   - Bjarne Stroustrup: [1.2.0](https://disk.yandex.ru/d/GiymRFQA_Yj-Hg)
+  - Linus Torvalds: [1.3.0](https://disk.yandex.ru/d/TdwIh4Ebkh-HIQ)
