@@ -22,7 +22,7 @@ class App extends StatelessWidget {
   final RouterDelegate<Object> _routerDelegate;
   final _routeInformationParser = MyRouteInformationParser();
 
-  Locale? locale;
+  final Locale? locale;
 
   App({
     required TasksRepository taskRepo,
