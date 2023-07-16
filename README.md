@@ -19,6 +19,17 @@
   - Deeplinks
   - Unit тесты
   - Интеграционные тесты
+  - Тёмная тема
+  - Сервисы Firebase
+  - GitHub Actions
+  - Flavors
+  - Адаптивность
+
+## Firebase App Distribution
+Инвайт [ссылка](https://appdistribution.firebase.dev/i/674567bb00bc1ab0)
+
+## Flavors
+Для перехода на dev flavor добавьте `--dart-define=FLAVOR=DEV` к аргументам `flutter run`
 
 ## Deeplinks
   - `todo://app/`
