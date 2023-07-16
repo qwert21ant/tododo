@@ -25,9 +25,7 @@ jobs:
         run: flutter pub get
 
       - name: Build apk
-        run: |
-          cat <<< ${{ secrets.GOOGLE_SERVICES_CONTENT }} > android/app/google-services.json
-          flutter build apk --release
+        run: flutter build apk --release
 
       - uses: actions/upload-artifact@v3
         with:
