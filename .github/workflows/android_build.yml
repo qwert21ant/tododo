@@ -25,7 +25,9 @@ jobs:
         run: flutter pub get
 
       - name: Load google-services.json
-        run: cat "${{ secrets.GOOGLE_SERVICES_CONTENT }}" > android/app/google-services.json
+        run: echo $content > android/app/google-services.json
+        env:
+          content: ${{ secrets.GOOGLE_SERVICES_CONTENT }}
 
       - name: Build apk
         run: flutter build apk --release
