@@ -44,7 +44,7 @@ jobs:
           content: ${{ secrets.GOOGLE_SERVICES_CONTENT }}
 
       - name: Build apk
-        run: flutter build apk --release
+        run: flutter build apk --release --dart-define=API_TOKEN=${{ secrets.API_TOKEN }}
 
       - uses: actions/upload-artifact@v3
         with:

@@ -36,7 +36,7 @@ typedef JsonObject = Map<String, dynamic>;
 
 final class NetStorageImpl implements RevisionTaskStorage {
   static const baseUrl = 'https://beta.mrdekk.ru/todobackend';
-  static const _token = '*some token*';
+  static const _token = String.fromEnvironment('API_TOKEN');
 
   static int? failsThreshold;
 
