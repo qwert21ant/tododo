@@ -67,4 +67,5 @@ jobs:
         with:
           appId: ${{ secrets.ANDROID_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+          groups: testers
           file: app-release.apk
