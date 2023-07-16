@@ -24,7 +24,7 @@ class RemoteConfigs {
       });
 
       await FirebaseRemoteConfig.instance.fetchAndActivate();
-    } catch(e) {
+    } catch (e) {
       Logger.warn('Firebase Remote Config init failure', 'services');
       _enabled = false;
     }

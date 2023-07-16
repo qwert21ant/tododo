@@ -9,12 +9,6 @@ jobs:
   main:
     name: Testing
     runs-on: ubuntu-latest
-
-    env:
-      ANDROID_APP_ID: ${{ secrets.ANDROID_APP_ID }}
-      ANDROID_API_KEY: ${{ secrets.ANDROID_API_KEY }}
-      FLAVOR: TESTING
-
     steps:
       - uses: actions/checkout@v3
       - uses: subosito/flutter-action@v2
