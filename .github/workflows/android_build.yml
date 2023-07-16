@@ -24,8 +24,13 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
 
+      - name: Load firebase_options.dart
+        run: echo "$content" > lib/services/firebase_options.dart
+        env:
+          content: ${{ secrets.FIREBASE_OPTIONS_CONTENT }}
+
       - name: Load google-services.json
-        run: echo $content > android/app/google-services.json
+        run: echo "$content" > android/app/google-services.json
         env:
           content: ${{ secrets.GOOGLE_SERVICES_CONTENT }}
 

@@ -18,6 +18,11 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
 
+      - name: Load firebase_options.dart
+        run: echo "$content" > lib/services/firebase_options.dart
+        env:
+          content: ${{ secrets.FIREBASE_OPTIONS_CONTENT }}
+
       - name: Check code format
         run: dart format -o none --set-exit-if-changed .
 
