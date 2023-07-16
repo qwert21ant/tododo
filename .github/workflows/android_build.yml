@@ -6,15 +6,17 @@ on:
     branches: [ main ]
 
 jobs:
-  main:
-    name: Build and Deploy
+  build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - uses: actions/setup-java@v2
         with:
           java-version: 17
-          distribution: oracle
+          distribution: temurin
+
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
@@ -27,9 +29,24 @@ jobs:
           cat <<< ${{ secrets.GOOGLE_SERVICES_CONTENT }} > android/app/google-services.json
           flutter build apk --release
 
+      - uses: actions/upload-artifact@v3
+        with:
+          name: app-release
+          path: /build/app/outputs/apk/release/app-release.apk
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: app-release
+
       - name: Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{ secrets.ANDROID_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
-          file: /build/app/outputs/apk/release/app-release.apk
+          file: app-release.apk
