@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:tododo/presentation/themes.dart';
+import 'package:tododo/presentation/theme/app_theme.dart';
 import 'package:tododo/presentation/widgets.dart';
 
 import 'package:tododo/utils/utils.dart';
@@ -45,9 +45,12 @@ class DateTile extends StatelessWidget {
           subtitle: MyText(
             formatDate(state.date),
             fontSize: 14,
-            color: AppTheme.blue,
+            color: context.appTheme.blue,
           ),
           trailing: Switch(
+            activeColor: context.appTheme.blue,
+            inactiveThumbColor: context.appTheme.backElevated,
+            inactiveTrackColor: context.appTheme.overlaySupport,
             value: state.date != null,
             onChanged: (bool value) async {
               if (value) {

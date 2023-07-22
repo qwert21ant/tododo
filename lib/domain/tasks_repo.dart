@@ -5,7 +5,11 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:get_it/get_it.dart';
+
 import 'package:tododo/model/task.dart';
+
+import 'package:tododo/services/firebase_services.dart';
 
 import 'package:tododo/data/task_storage/task_storage.dart';
 
@@ -67,6 +71,11 @@ class TasksRepository extends Cubit<TasksState> {
 
     await _storage.addTask(task);
 
+    GetIt.I<FirebaseServices>().logEvent('add_task', {
+      'importance': importanceToString(task.importance),
+      'has_date': task.date != null ? 1 : 0,
+    });
+
     emit(state.copyWith(tasks: _tasks));
   }
 
@@ -77,6 +86,10 @@ class TasksRepository extends Cubit<TasksState> {
     bool? nullDate,
     DateTime? date,
   }) async {
+    bool updateText = _tasks[index].text == text;
+    bool updateImportance = _tasks[index].importance == importance;
+    bool updateDate = _tasks[index].date == date;
+
     if (text != null) {
       _tasks[index].text = text;
     }
@@ -94,6 +107,12 @@ class TasksRepository extends Cubit<TasksState> {
 
     await _storage.updateTask(_tasks[index]);
 
+    GetIt.I<FirebaseServices>().logEvent('update_task', {
+      'update_text': updateText ? 1 : 0,
+      'update_importance': updateImportance ? 1 : 0,
+      'update_date': updateDate ? 1 : 0,
+    });
+
     emit(state.copyWith(tasks: _tasks));
   }
 
@@ -103,6 +122,12 @@ class TasksRepository extends Cubit<TasksState> {
 
     await _storage.updateTask(_tasks[index]);
 
+    if (_tasks[index].isDone) {
+      GetIt.I<FirebaseServices>().logEvent('make_done');
+    } else {
+      GetIt.I<FirebaseServices>().logEvent('make_undone');
+    }
+
     emit(state.copyWith(tasks: _tasks));
   }
 
@@ -110,6 +135,8 @@ class TasksRepository extends Cubit<TasksState> {
     await _storage.deleteTask(_tasks[index].id);
 
     _tasks.removeAt(index);
+
+    GetIt.I<FirebaseServices>().logEvent('remove_task');
 
     emit(state.copyWith(tasks: _tasks));
   }

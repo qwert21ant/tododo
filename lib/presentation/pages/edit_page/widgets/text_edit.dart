@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:tododo/presentation/themes.dart';
+import 'package:tododo/presentation/theme/app_theme.dart';
 
 import 'package:tododo/utils/s.dart';
 
@@ -39,7 +39,7 @@ class _TextEditState extends State<TextEdit> {
 
     return Container(
       decoration: BoxDecoration(
-        color: AppTheme.backSecondary,
+        color: context.appTheme.backSecondary,
         borderRadius: BorderRadius.circular(8),
         boxShadow: const [
           BoxShadow(
@@ -62,8 +62,14 @@ class _TextEditState extends State<TextEdit> {
         decoration: InputDecoration(
           border: InputBorder.none,
           hintText: S.of(context)['whatToDo'],
+          hintStyle: context.appTheme.textBody.copyWith(
+            color: context.appTheme.labelTertiary,
+          ),
         ),
-        style: AppTheme.body.copyWith(height: 1.125),
+        style: context.appTheme.textBody.copyWith(
+          height: 1.125,
+          color: context.appTheme.labelPrimary,
+        ),
       ),
     );
   }

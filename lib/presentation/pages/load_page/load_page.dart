@@ -7,7 +7,7 @@ import 'package:get_it/get_it.dart';
 import 'package:tododo/domain/tasks_repo.dart';
 import 'package:tododo/domain/tasks_state.dart';
 
-import 'package:tododo/presentation/themes.dart';
+import 'package:tododo/presentation/theme/app_theme.dart';
 import 'package:tododo/presentation/widgets.dart';
 
 import 'package:tododo/presentation/navigation/navigation_manager.dart';
@@ -23,6 +23,7 @@ class LoadPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: context.appTheme.backPrimary,
       body: SafeArea(
         child: BlocConsumer<TasksRepository, TasksState>(
           listener: (context, state) {
@@ -40,9 +41,9 @@ class LoadPage extends StatelessWidget {
                 child: FittedBox(
                   child: Column(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.warning_amber,
-                        color: AppTheme.red,
+                        color: context.appTheme.red,
                         size: 40,
                       ),
                       MyText(S.of(context)['initError'])
@@ -51,10 +52,10 @@ class LoadPage extends StatelessWidget {
                 ),
               );
             } else {
-              return const Center(
+              return Center(
                 child: Icon(
                   Icons.check,
-                  color: AppTheme.green,
+                  color: context.appTheme.green,
                   size: 50,
                 ),
               );

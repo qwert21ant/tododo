@@ -6,7 +6,7 @@ import 'package:get_it/get_it.dart';
 
 import 'package:tododo/domain/tasks_repo.dart';
 
-import 'package:tododo/presentation/themes.dart';
+import 'package:tododo/presentation/theme/app_theme.dart';
 import 'package:tododo/presentation/widgets.dart';
 
 import 'package:tododo/utils/s.dart';
@@ -34,7 +34,10 @@ class TaskList extends StatelessWidget {
             bottomRight: Radius.circular(8),
           ),
           child: MyListTile(
-            title: MyText(S.of(context)['new'], color: AppTheme.labelTertiary),
+            title: MyText(
+              S.of(context)['new'],
+              color: context.appTheme.labelTertiary,
+            ),
             onTap: () {
               GetIt.I<NavMan>().openEditPage();
             },
@@ -46,7 +49,10 @@ class TaskList extends StatelessWidget {
         ClipRRect(
           borderRadius: const BorderRadius.all(Radius.circular(8)),
           child: MyListTile(
-            title: MyText(S.of(context)['new'], color: AppTheme.labelTertiary),
+            title: MyText(
+              S.of(context)['new'],
+              color: context.appTheme.labelTertiary,
+            ),
             onTap: () {
               GetIt.I<NavMan>().openEditPage();
             },
@@ -61,9 +67,9 @@ class TaskList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverContainer(
-      decoration: const BoxDecoration(
-        color: AppTheme.backSecondary,
-        boxShadow: [
+      decoration: BoxDecoration(
+        color: context.appTheme.backSecondary,
+        boxShadow: const [
           BoxShadow(
             offset: Offset(0, 2),
             color: Color.fromRGBO(0, 0, 0, 0.12),
@@ -74,7 +80,7 @@ class TaskList extends StatelessWidget {
             blurRadius: 2,
           )
         ],
-        borderRadius: BorderRadius.all(Radius.circular(8)),
+        borderRadius: const BorderRadius.all(Radius.circular(8)),
       ),
       child: Builder(
         builder: (context) {

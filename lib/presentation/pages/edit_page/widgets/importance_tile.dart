@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:tododo/presentation/themes.dart';
+import 'package:get_it/get_it.dart';
+
+import 'package:tododo/services/firebase_services.dart';
+
+import 'package:tododo/presentation/theme/app_theme.dart';
 import 'package:tododo/presentation/widgets.dart';
 
 import 'package:tododo/utils/s.dart';
@@ -15,7 +19,7 @@ class ImportanceTile extends StatelessWidget {
   const ImportanceTile({super.key});
 
   List<Widget> _itemBuilder(BuildContext context, bool isSub) {
-    final color = isSub ? AppTheme.labelTertiary : null;
+    final color = isSub ? context.appTheme.labelTertiary : null;
     final fontSize = isSub ? 14.0 : null;
 
     return [
@@ -23,7 +27,10 @@ class ImportanceTile extends StatelessWidget {
       MyText(S.of(context)['low'], color: color, fontSize: fontSize),
       MyText(
         '!! ${S.of(context)['high']}',
-        color: color ?? AppTheme.red,
+        color: color ??
+            (GetIt.I<FirebaseServices>().configs.importanceFigmaColor
+                ? context.appTheme.red
+                : context.appTheme.optionalImportance),
         fontSize: fontSize,
       ),
     ];

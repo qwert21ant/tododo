@@ -8,10 +8,12 @@ import 'package:get_it/get_it.dart';
 
 import 'package:tododo/domain/tasks_repo.dart';
 
-import 'package:tododo/presentation/themes.dart';
+import 'package:tododo/presentation/theme/app_theme.dart';
 import 'package:tododo/presentation/widgets.dart';
 
 import 'package:tododo/model/task.dart';
+
+import 'package:tododo/services/firebase_services.dart';
 
 import 'package:tododo/presentation/navigation/navigation_manager.dart';
 
@@ -61,14 +63,17 @@ class _ListItemState extends State<ListItem> {
     if (task.isDone) {
       iconSpan = null;
     } else if (task.importance == TaskImportance.low) {
-      iconSpan = const WidgetSpan(
-        child: Icon(Icons.arrow_downward, color: AppTheme.gray, size: 20),
+      iconSpan = WidgetSpan(
+        child:
+            Icon(Icons.arrow_downward, color: context.appTheme.gray, size: 20),
       );
     } else if (task.importance == TaskImportance.high) {
       iconSpan = TextSpan(
         text: ' !! ',
-        style: AppTheme.body.copyWith(
-          color: AppTheme.red,
+        style: context.appTheme.textBody.copyWith(
+          color: GetIt.I<FirebaseServices>().configs.importanceFigmaColor
+              ? context.appTheme.red
+              : context.appTheme.optionalImportance,
           fontSize: 20,
           height: 1,
           fontWeight: FontWeight.w700,
@@ -86,8 +91,10 @@ class _ListItemState extends State<ListItem> {
           if (iconSpan != null) iconSpan,
           TextSpan(
             text: task.text,
-            style: AppTheme.body.copyWith(
-              color: task.isDone ? AppTheme.labelTertiary : null,
+            style: context.appTheme.textBody.copyWith(
+              color: task.isDone
+                  ? context.appTheme.labelTertiary
+                  : context.appTheme.labelPrimary,
               decoration: task.isDone ? TextDecoration.lineThrough : null,
             ),
           ),
@@ -99,7 +106,7 @@ class _ListItemState extends State<ListItem> {
         ? MyText(
             formatDate(task.date),
             fontSize: 14,
-            color: AppTheme.labelTertiary,
+            color: context.appTheme.labelTertiary,
           )
         : null;
 
@@ -129,21 +136,21 @@ class _ListItemState extends State<ListItem> {
       },
       background: DismissibleBackground(
         progressStream: streamController.stream,
-        color: AppTheme.green,
+        color: context.appTheme.green,
         initOffset: 24 + 28,
-        child: const Icon(
+        child: Icon(
           Icons.check,
-          color: AppTheme.white,
+          color: context.appTheme.white,
         ),
       ),
       secondaryBackground: DismissibleBackground(
         progressStream: streamController.stream,
-        color: AppTheme.red,
+        color: context.appTheme.red,
         isReversed: true,
         initOffset: 24 + 28,
-        child: const Icon(
+        child: Icon(
           Icons.delete,
-          color: AppTheme.white,
+          color: context.appTheme.white,
         ),
       ),
       child: MyListTile(
@@ -153,12 +160,14 @@ class _ListItemState extends State<ListItem> {
         leading: Checkbox(
           fillColor: MaterialStateColor.resolveWith((states) {
             if (states.contains(MaterialState.selected)) {
-              return AppTheme.green;
+              return context.appTheme.green;
             }
 
             return task.importance == TaskImportance.high
-                ? AppTheme.red
-                : AppTheme.labelTertiary;
+                ? (GetIt.I<FirebaseServices>().configs.importanceFigmaColor
+                    ? context.appTheme.red
+                    : context.appTheme.optionalImportance)
+                : context.appTheme.labelTertiary;
           }),
           value: task.isDone,
           onChanged: (value) {
@@ -171,7 +180,10 @@ class _ListItemState extends State<ListItem> {
         ),
         title: title,
         subtitle: subtitle,
-        trailing: const Icon(Icons.info_outline, color: AppTheme.labelTertiary),
+        trailing: Icon(
+          Icons.info_outline,
+          color: context.appTheme.labelTertiary,
+        ),
       ),
     );
 
