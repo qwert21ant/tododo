@@ -2,6 +2,8 @@
 
 Приложение TODO list на Flutter
 
+Реализовано в рамках Школы мобильной разработки (Flutter) от Яндекса (лето 2023)
+
 ## Скрины
 
 ![Screenshots](/assets/screens.png)
